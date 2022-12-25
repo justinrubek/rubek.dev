@@ -75,13 +75,15 @@
       }
       // common-build-args);
 
-    devTools = with pkgs; [
+    devTools = [
       # rust tooling
       fenix-toolchain
-      bacon
-      rustfmt
+      pkgs.bacon
+      pkgs.rustfmt
+      # javascript tooling
+      pkgs.nodejs
       # version control
-      cocogitto
+      pkgs.cocogitto
       inputs'.bomper.packages.cli
       # misc
     ];
