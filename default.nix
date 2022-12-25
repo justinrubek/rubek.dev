@@ -85,7 +85,7 @@
       pkgs.nodejs
       # version control
       pkgs.cocogitto
-      inputs'.bomper.packages.api
+      inputs'.bomper.packages.cli
       # misc
     ];
 
