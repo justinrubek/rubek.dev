@@ -10,6 +10,7 @@
     lib,
     system,
     inputs',
+    self',
     ...
   }: let
     fenix-channel = inputs'.fenix.packages.latest;
@@ -68,10 +69,10 @@
       };
     };
 
-    cli-package = craneLib.buildPackage ({
-        pname = "cli";
+    api-package = craneLib.buildPackage ({
+        pname = "api";
         cargoArtifacts = deps-only;
-        cargoExtraArgs = "--bin cli";
+        cargoExtraArgs = "--bin api";
       }
       // common-build-args);
 
@@ -84,7 +85,7 @@
       pkgs.nodejs
       # version control
       pkgs.cocogitto
-      inputs'.bomper.packages.cli
+      inputs'.bomper.packages.api
       # misc
     ];
 
@@ -105,16 +106,25 @@
     };
 
     packages = {
-      default = packages.cli;
-      cli = cli-package;
+      default = packages.api;
+      api = api-package;
+      server = pkgs.runCommand "bundled-server" {} ''
+        mkdir -p $out
+
+        mkdir -p $out/public
+        cp -r ${self'.packages.site}/* $out/public
+
+        mkdir -p $out/bin
+        cp ${api-package}/bin/api $out/bin
+      '';
     };
 
     apps = {
-      cli = {
+      api = {
         type = "app";
-        program = "${self.packages.${system}.cli}/bin/cli";
+        program = "${self.packages.${system}.api}/bin/api";
       };
-      default = apps.cli;
+      default = apps.api;
     };
 
     checks = {
