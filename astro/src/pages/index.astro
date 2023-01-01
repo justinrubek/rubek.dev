@@ -6,7 +6,7 @@ import PostPreviewList from '$/components/PostPreviewList.astro'
 const title = 'Home'
 const description = 'rubek.dev'
 
-const posts = await Astro.glob('./posts/*.md')
+const posts = await Astro.glob('./posts/*.md*')
 ---
 <DefaultPageLayout content={{ title, description }} showPageHeader={false}>
     <PostPreviewList posts={posts.slice(0, 2)} />

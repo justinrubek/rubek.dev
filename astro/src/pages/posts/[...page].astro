@@ -8,7 +8,7 @@ let title = 'posts'
 let description = ''
 
 export async function getStaticPaths({ paginate }) {
-  const allPosts = await Astro.glob('./*.md');
+  const allPosts = await Astro.glob('./*.md*');
   const sortedPosts = allPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
     return paginate(sortedPosts, {
