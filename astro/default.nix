@@ -10,6 +10,7 @@
     lib,
     system,
     inputs',
+    self',
     ...
   }: let
     inherit (inputs.nix-filter.lib) filter inDirectory matchExt;
@@ -21,10 +22,10 @@
           (inDirectory "src")
           (inDirectory "public")
           (matchExt "js")
+          (matchExt "json")
+          (matchExt "ts")
           (matchExt "cjs")
           (matchExt "mjs")
-          ./package.json
-          ./package-lock.json
         ];
       };
 
@@ -34,12 +35,27 @@
         translator = "package-lock";
       };
 
-      # Instead of packaging the library, only package the final build
-      packageOverrides.site.copySite = {
-        installPhase = ''
-          mkdir -p $out
-          cp -r ./dist/* $out
-        '';
+      packageOverrides.site = {
+        buildSearchIndex = {
+          # provide this project's cli package to enable postbuild script to work
+          nativeBuildInputs = old: old ++ [self'.packages.cli];
+
+          # duplicated by package.json's postbuild script
+          # TODO: remove one or the other
+          buildPhase = old: ''
+            ${self'.packages.cli}/bin/cli search-index ./src/pages/posts > ./public/search-index.json
+
+            ${old}
+          '';
+        };
+
+        # Instead of packaging the library, only package the final build
+        copySite = {
+          installPhase = ''
+            mkdir -p $out
+            cp -r ./dist/* $out
+          '';
+        };
       };
     };
   };
