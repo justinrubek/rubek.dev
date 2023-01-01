@@ -45,7 +45,7 @@ fn main() {
 }
 
 fn generate_search_index(path: String) {
-    let index_values = glob::glob(&format!("{path}/**/*.md"))
+    let index_values = glob::glob(&format!("{path}/**/*.md*"))
         .expect("failed to read glob")
         .map(|entry| {
             let entry = entry.expect("failed to read entry");
