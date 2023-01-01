@@ -1,0 +1,15 @@
+---
+    import { SITE } from '$/config'
+    import ModeLabel from './ModeLabel.svelte'
+---
+<footer class="footer">
+    <nav class="nav">
+        <div><a href={ SITE.githubUrl } title={`${ SITE.name } github url'`}>{ SITE.name }</a>
+        powered by <a href="https://astro.build/">astro</a></div>
+    </nav>
+</footer>
+<style>
+    .footer {
+        @apply py-6 border-t
+    }
+</style>

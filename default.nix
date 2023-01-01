@@ -76,6 +76,13 @@
       }
       // common-build-args);
 
+    cli-package = craneLib.buildPackage ({
+        pname = "cli";
+        cargoArtifacts = deps-only;
+        cargoExtraArgs = "--bin cli";
+      }
+      // common-build-args);
+
     devTools = [
       # rust tooling
       fenix-toolchain
@@ -87,6 +94,8 @@
       pkgs.cocogitto
       inputs'.bomper.packages.cli
       # misc
+
+      self'.packages.cli
     ];
 
     extraBuildInputs = [
@@ -108,6 +117,7 @@
     packages = {
       default = packages.api;
       api = api-package;
+      cli = cli-package;
       server = pkgs.runCommand "bundled-server" {} ''
         mkdir -p $out
 
@@ -126,6 +136,10 @@
       api = {
         type = "app";
         program = "${self.packages.${system}.api}/bin/api";
+      };
+      cli = {
+        type = "app";
+        program = "${self.packages.${system}.cli}/bin/cli";
       };
       default = apps.api;
     };
