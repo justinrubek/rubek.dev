@@ -51,7 +51,7 @@ fn generate_search_index(path: String) {
             let entry = entry.expect("failed to read entry");
 
             let file = std::fs::read_to_string(&entry).expect("failed to read file");
-            let slug = entry.file_name().expect("failed to get file name").to_str().expect("failed to convert file name to string").to_string();
+            let slug = entry.file_stem().expect("failed to get file name").to_str().expect("failed to convert file name to string").to_string();
 
             let matter = Matter::<YAML>::new();
             let matter_data = matter.parse_with_struct::<MatterData>(&file).expect("failed to parse matter data");
