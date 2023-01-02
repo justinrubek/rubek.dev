@@ -4,7 +4,7 @@
 ---
 <footer class="footer">
     <nav class="nav">
-        <div><a href={ SITE.githubUrl } title={`${ SITE.name } github url'`}>{ SITE.name }</a>
+        <div class="text"><a href={ SITE.githubUrl } title={`${ SITE.name } github url'`}>{ SITE.name }</a>
         powered by <a href="https://astro.build/">astro</a></div>
     </nav>
 </footer>
@@ -12,4 +12,8 @@
     .footer {
         @apply py-6 border-t
     }
+    .text {
+        @apply text-base text-theme-text
+    }
+</style>
 </style>
