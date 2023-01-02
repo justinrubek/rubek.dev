@@ -2,8 +2,7 @@
 import DefaultPageLayout from '$/layouts/default.astro'
 
 let title = 'All Tags'
-let description = 'All the tags used so far...'
-
+let description = ''
 
 const allPosts = await Astro.glob('../posts/*.md*');
 const tags = [...new Set([].concat.apply([], allPosts.map(post => post.frontmatter.tags)))]
