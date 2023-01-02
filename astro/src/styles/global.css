@@ -12,3 +12,15 @@
 }
 @tailwind components;
 @tailwind utilities;
+
+:root {
+    --theme-text: var(--color-gray-800);
+}
+
+p {
+    color: var(text-theme-text);
+}
+
+a {
+    color: var(text-theme-text);
+}

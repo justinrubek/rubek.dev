@@ -11,7 +11,7 @@ const posts = await Astro.glob('./posts/*.md*')
 <DefaultPageLayout content={{ title, description }} showPageHeader={false}>
     <PostPreviewList posts={posts.slice(0, 2)} />
     <div class="page__actions">
-        <a class="action__navigate-posts href="/posts" title="All Posts">posts &rarr;</a>
+        <a class="action__navigate-posts" href="/posts" title="All Posts">posts &rarr;</a>
     </div>
 </DefaultPageLayout>
 
