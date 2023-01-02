@@ -1,0 +1,23 @@
+@tailwind base;
+@layer base {
+	body {
+		&.dark {
+			@apply text-gray-200;
+            header, footer {
+                @apply text-gray-400 border-gray-700;
+            }
+		}
+	}
+}
+@tailwind components;
+@tailwind utilities;
+
+pre.astro-code {
+    position: relative;
+}
+
+pre[data-filename]::before {
+	content: attr(data-filename);
+	display: inline-block;
+	@apply top-0 right-0 absolute px-2 pt-1;
+}

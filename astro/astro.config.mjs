@@ -10,6 +10,15 @@ const __dirname = dirname(__filename)
 
 // Full Astro Configuration API Documentation:
 // https://docs.astro.build/reference/configuration-reference
+//
+
+import codeblockPlugin from './src/plugins/codeblock.mjs'
+
+const mdxOptions = {
+    remarkPlugins: [
+        [codeblockPlugin],
+    ],
+};
 
 // @type-check enabled!
 // @ts-check
@@ -23,7 +32,7 @@ export default /** @type {import('astro').AstroUserConfig} */ ({
     // port: 3000,
   },
   integrations: [
-    mdx(),
+    mdx(mdxOptions),
     svelte(),
     tailwind({
         config: {
