@@ -5,6 +5,14 @@ export const NAV_ITEMS: NavItems = {
         path: '/',
         title: 'home'
     },
+    contact: {
+        path: '/contact',
+        title: 'contact'
+    },
+    about: {
+        path: '/about',
+        title: 'about'
+    },
     posts: {
         path: '/posts',
         title: 'posts'
@@ -13,10 +21,6 @@ export const NAV_ITEMS: NavItems = {
         path: '/tags',
         title: 'tags'
     },
-    about: {
-        path: '/about',
-        title: 'about'
-    }
 }
 
 export const SITE = {
