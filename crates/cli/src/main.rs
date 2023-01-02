@@ -1,5 +1,5 @@
 use clap::Parser;
-use gray_matter::{Matter, engine::YAML};
+use gray_matter::{engine::YAML, Matter};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
@@ -13,9 +13,9 @@ struct Args {
 #[derive(clap::Subcommand, Debug)]
 enum Action {
     /// Output JSON to use as an index for searching the site
-    SearchIndex { 
+    SearchIndex {
         /// The directory to search for markdown files
-        path: String 
+        path: String,
     },
 }
 
@@ -51,21 +51,26 @@ fn generate_search_index(path: String) {
             let entry = entry.expect("failed to read entry");
 
             let file = std::fs::read_to_string(&entry).expect("failed to read file");
-            let slug = entry.file_stem().expect("failed to get file name").to_str().expect("failed to convert file name to string").to_string();
+            let slug = entry
+                .file_stem()
+                .expect("failed to get file name")
+                .to_str()
+                .expect("failed to convert file name to string")
+                .to_string();
 
             let matter = Matter::<YAML>::new();
-            let matter_data = matter.parse_with_struct::<MatterData>(&file).expect("failed to parse matter data");
+            let matter_data = matter
+                .parse_with_struct::<MatterData>(&file)
+                .expect("failed to parse matter data");
             (matter_data, slug)
         })
-        .map(|(matter_data, slug)| {
-            IndexEntry {
-                slug,
-                category: String::from("posts"),
-                title: matter_data.data.title,
-                description: matter_data.data.description,
-                tags: matter_data.data.tags,
-                body: matter_data.content,
-            }
+        .map(|(matter_data, slug)| IndexEntry {
+            slug,
+            category: String::from("posts"),
+            title: matter_data.data.title,
+            description: matter_data.data.description,
+            tags: matter_data.data.tags,
+            body: matter_data.content,
         })
         .collect::<Vec<_>>();
 
