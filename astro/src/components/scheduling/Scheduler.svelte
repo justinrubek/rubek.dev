@@ -3,12 +3,47 @@
     import { Datepicker, themes } from '@justinrubek/svelte-calendar'
     import dayjs from 'dayjs'
 
-    import { scheduleStore, contextKey } from './store';
+    import Timepicker from "./Timepicker.svelte"
+    import { contextKey, dateContextKey, get as getStore } from './store';
 
-    setContext(scheduleStore.contextKey, scheduleStore);
-    $: schedule_availability = $scheduleStore;
+    function timeslots(availability: CalendarAvailability, date: Date): Array<TimeRange> {
+        if (date == null || availability == null) {
+            return [];
+        }
+        const year = date.getFullYear();
+        const month = date.getMonth();
+        const day = date.getDate();
+
+        // all open ranges of time in the day
+        let ranges = availability?.[year]?.[month]?.[day];
+
+        if (ranges == null) {
+            return [];
+        }
+
+        // Divide each range into 30 minute slots
+        const granularity = 30;
+        let slots = [];
+        for (let range of ranges) {
+            let start = range[0];
+            let end = range[1];
+            while (start < end) {
+                let newStart = start.add(granularity, 'minute');
+                slots.push([start, newStart]);
+                start = newStart;
+            }
+        }
+
+        return slots;
+    }
 
     let datestore;
+    let selected;
+
+    export let scheduleStore = getStore();
+    setContext(scheduleStore.contextKey, scheduleStore);
+    $: schedule_availability = $scheduleStore.availability;
+    $: selectedTimeslots = timeslots(schedule_availability, selected);
 
     const { dark: theme } = themes;
     theme.calendar.width = '500px';
@@ -84,8 +119,6 @@
     }
 
     onMount(() => {
-        console.log('Scheduler mounted')
-
         // Determine the bounds of the month
         let start = dayjs().startOf('month');
         let end = dayjs().endOf('month');
@@ -104,12 +137,10 @@
         .then(response => response.json())
         .then(process_availability)
         .then(calendar => {
-            schedule_availability = calendar;
             datestore.setMarkedDates(markDates(calendar));
-        })
-        .then(() => {
-            console.log({ schedule_availability });
+            scheduleStore.updateAvailability(calendar);
         })
     })
 </script>
-<Datepicker {theme} bind:store={datestore} />
+<Datepicker {theme} bind:selected bind:store={datestore} />
+<Timepicker {selected} {selectedTimeslots} />
