@@ -1,20 +1,18 @@
 <script lang="ts">
-    import { onMount } from 'svelte'
+    import { onMount, setContext } from 'svelte'
     import { Datepicker, themes } from '@justinrubek/svelte-calendar'
     import dayjs from 'dayjs'
+
+    import { scheduleStore, contextKey } from './store';
+
+    setContext(scheduleStore.contextKey, scheduleStore);
+    $: schedule_availability = $scheduleStore;
+
+    let datestore;
 
     const { dark: theme } = themes;
     theme.calendar.width = '500px';
     // theme.calendar.maxWidth = '20vw';
-
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const lastweek = new Date(today);
-    lastweek.setDate(lastweek.getDate() - 7);
-
-    let markedDates = [today, tomorrow, lastweek];
-    let schedule_availability = { };
 
     function process_availability(availability) {
         const { start, end, matrix, granularity } = availability;
@@ -75,6 +73,16 @@
         return calendar;
     }
 
+    function markDates(calendar_availability) {
+        return Object.keys(calendar_availability).map(year => {
+            return Object.keys(calendar_availability[year]).map(month => {
+                return Object.keys(calendar_availability[year][month]).map(day => {
+                    return new Date(year, month, day);
+                });
+            });
+        }).flat(2);
+    }
+
     onMount(() => {
         console.log('Scheduler mounted')
 
@@ -97,29 +105,11 @@
         .then(process_availability)
         .then(calendar => {
             schedule_availability = calendar;
-            markedDates = Object.keys(calendar).map(year => {
-                return Object.keys(calendar[year]).map(month => {
-                    return Object.keys(calendar[year][month]).map(day => {
-                        return new Date(year, month, day);
-                    });
-                });
-            }).flat(2);
-            console.log('markedDates', markedDates);
+            datestore.setMarkedDates(markDates(calendar));
         })
         .then(() => {
             console.log({ schedule_availability });
-        });
+        })
     })
-
-    // TODO: Make markedDates a reactive variable
-    $: marked = Object.keys(schedule_availability).map(year => {
-        return Object.keys(schedule_availability[year]).map(month => {
-            return Object.keys(schedule_availability[year][month]).map(day => {
-                return new Date(year, month, day);
-            });
-        });
-    }).flat(2);
-    $: console.log('marked', marked);
-
 </script>
-<Datepicker {marked} {theme}/>
+<Datepicker {theme} bind:store={datestore} />
