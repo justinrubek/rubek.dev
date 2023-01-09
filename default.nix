@@ -95,13 +95,15 @@
       inputs'.bomper.packages.cli
       # misc
 
-      self'.packages.cli
+      # self'.packages.cli
     ];
 
     extraBuildInputs = [
       pkgs.pkg-config
     ];
     extraNativeBuildInputs = [
+      pkgs.openssl
+      pkgs.openssl.dev
     ];
 
     allBuildInputs = base: base ++ extraBuildInputs;
