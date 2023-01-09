@@ -1,27 +1,22 @@
 use axum::{
-    http::StatusCode,
+    http::{StatusCode, HeaderValue, Method},
     response::IntoResponse,
     routing::{get, get_service, post},
     Router,
 };
 use caldav_utils::{
-    availability::get_availability,
     caldav::client::{DavClient, DavCredentials},
 };
-use scheduling_api::{get_calendars, get_now, request_availability, state::CaldavAvailability};
+use scheduling_api::{get_now, request_availability, state::CaldavAvailability};
 use std::net::SocketAddr;
 use tower_http::services::ServeDir;
 
 #[tokio::main]
 async fn main() {
+    tracing_subscriber::fmt::init();
+
     // Use the first arg as the directory to serve files from
     let dir = std::env::args().nth(1).unwrap_or_else(|| ".".to_string());
-
-    // Get the port to listen on from the environment, default 8000
-    let port = std::env::var("PORT")
-        .ok()
-        .and_then(|it| it.parse().ok())
-        .unwrap_or(8000);
 
     let username = std::env::var("CALDAV_USERNAME").expect("CALDAV_USERNAME not set");
     let password = std::env::var("CALDAV_PASSWORD").expect("CALDAV_PASSWORD not set");
@@ -50,6 +45,8 @@ async fn scheduler_api(caldav_state: CaldavAvailability, dir: String) -> Result<
         .and_then(|it| it.parse().ok())
         .unwrap_or(8000);
 
+    let cors = tower_http::cors::CorsLayer::permissive();
+
     let serve_dir = get_service(ServeDir::new(dir)).handle_error(handle_error);
     let app = Router::new()
         .route("/now", get(get_now))
@@ -57,6 +54,7 @@ async fn scheduler_api(caldav_state: CaldavAvailability, dir: String) -> Result<
         .route("/availability", post(request_availability))
         .route("/health", get(health))
         .with_state(caldav_state)
+        .layer(cors)
         .fallback_service(serve_dir);
 
     let addr = SocketAddr::from(([0, 0, 0, 0], port));
