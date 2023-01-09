@@ -13,50 +13,75 @@
     const lastweek = new Date(today);
     lastweek.setDate(lastweek.getDate() - 7);
 
-    const markedDates = [today, tomorrow, lastweek];
-    let schedule_availability;
+    let markedDates = [today, tomorrow, lastweek];
+    let schedule_availability = { };
 
     function process_availability(availability) {
-        const { start, end, matrix } = availability;
-        // matrix - a list of booleans representing 30 minute blocks
+        const { start, end, matrix, granularity } = availability;
         // start - a string representing the start time of the time range for matrix
         // end - a string representing the end time of the time range for matrix
         // granularity (not in this example) - a string representing the granularity of the matrix (in seconds). Assume it is 30 minutes
-        const granularity = 30 * 60;
+        // matrix - a list of booleans representing blocks of time (in order) where true means available and false means unavailable
 
-        // The data needs to mapped to a calendar
-        // To do this we should iterate over days in the local timezone
-        // and produce an object indexed by the date that corresponds to the time
-        // range for that day 
-        // ultimately, we want something like this (assume this is psuedo code) and variables should be stored as relevant JavaScript types
-        /* 
-        start = "2023-01-01T00:00:00Z"
-        end = "2023-01-31T23:59:59Z"
-        // Note that the month is indexed from 0, but the day is indexed from 1
-        availableDates = { 
-            "2023": {
-                "0": [ 10, 11, 15, 16 ]
-            },
-        }
-        availability = {
-            "2023" {
-                "0": {
-                    "10": [ "2023-01-01T10:00:00Z", "2023-01-01T10:30:00Z" ],
-                    "11": [ "2023-01-01T11:00:00Z", "2023-01-01T11:30:00Z" ],
-                    "15": [ "2023-01-01T15:00:00Z", "2023-01-01T15:30:00Z" ],
-                    "16": [ "2023-01-01T16:00:00Z", "2023-01-01T16:30:00Z" ],
+        // First, segment the matrix times into a list of index ranges
+        // For example, if the matrix is [true, true, false, true, true, true, false, true, true]
+        // Then the ranges would be [[0, 2], [3, 6], [7, 9]]
+        const ranges = [];
+        let start_index = null;
+        for (let i = 0; i < matrix.length; i++) {
+            if (matrix[i]) {
+                if (start_index === null) {
+                    start_index = i;
+                }
+            } else {
+                if (start_index !== null) {
+                    ranges.push([start_index, i]);
+                    start_index = null;
                 }
             }
-        };
+        }
 
-        */
+        // Next, convert the ranges into a list of start and end times
+        const times = [];
+        for (let i = 0; i < ranges.length; i++) {
+            const [start_index, end_index] = ranges[i];
+            const start_time = dayjs(start, 'HH:mm').add(start_index * granularity, 'seconds');
+            const end_time = dayjs(start, 'HH:mm').add(end_index * granularity, 'seconds');
+            times.push([start_time, end_time]);
+        }
+        // pretty-print
+        // const pretty_times = times.map(([start_time, end_time]) => `${start_time.format('h:mm A')} - ${end_time.format('h:mm A')}`);
 
+        // Now, map this to the calendar
+        // { year: { month: { day: [start_time, end_time] } } }
+        const calendar = {};
+        for (let i = 0; i < times.length; i++) {
+            const [start_time, end_time] = times[i];
+            const year = start_time.year();
+            const month = start_time.month();
+            const day = start_time.date();
+            if (!calendar[year]) {
+                calendar[year] = {};
+            }
+            if (!calendar[year][month]) {
+                calendar[year][month] = {};
+            }
+            if (!calendar[year][month][day]) {
+                calendar[year][month][day] = [];
+            }
+            calendar[year][month][day].push([start_time, end_time]);
+        }
+
+        return calendar;
     }
 
     onMount(() => {
         console.log('Scheduler mounted')
-        let start = new Date();
-        /*
+
+        // Determine the bounds of the month
+        let start = dayjs().startOf('month');
+        let end = dayjs().endOf('month');
+
         fetch('http://localhost:8000/availability', {
             method: 'POST',
             cache: 'no-cache',
@@ -65,16 +90,36 @@
             },
             body: JSON.stringify({
                 start: start.toISOString(),
-                end: start.toISOString(),
+                end: end.toISOString(),
             })
         })
         .then(response => response.json())
-        .then(data => {
-            schedule_availability = data;
-        }).then(() => {
-            console.log(schedule_availability);
+        .then(process_availability)
+        .then(calendar => {
+            schedule_availability = calendar;
+            markedDates = Object.keys(calendar).map(year => {
+                return Object.keys(calendar[year]).map(month => {
+                    return Object.keys(calendar[year][month]).map(day => {
+                        return new Date(year, month, day);
+                    });
+                });
+            }).flat(2);
+            console.log('markedDates', markedDates);
+        })
+        .then(() => {
+            console.log({ schedule_availability });
         });
-        */
     })
+
+    // TODO: Make markedDates a reactive variable
+    $: marked = Object.keys(schedule_availability).map(year => {
+        return Object.keys(schedule_availability[year]).map(month => {
+            return Object.keys(schedule_availability[year][month]).map(day => {
+                return new Date(year, month, day);
+            });
+        });
+    }).flat(2);
+    $: console.log('marked', marked);
+
 </script>
-<Datepicker {markedDates} {theme}/>
+<Datepicker {marked} {theme}/>
