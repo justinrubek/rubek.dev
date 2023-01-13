@@ -16,6 +16,11 @@
         dispatch('selectTime', { start, end });
     }
 </script>
+<style>
+.text {
+    @apply text-theme-primary dark:text-theme-dark-primary;
+}
+</style>
 {#if selectedTimeslots.length > 0}
     <ul role="list">
         {#each selectedTimeslots as timeslot}
@@ -23,5 +28,5 @@
         {/each}
     </ul>
 {:else}
-    <p>No timeslots available on this day</p>
+    <p class="text">No timeslots available on this day</p>
 {/if}
