@@ -1,5 +1,5 @@
 use axum::{
-    http::{StatusCode, HeaderValue, Method},
+    http::StatusCode,
     response::IntoResponse,
     routing::{get, get_service, post},
     Router,
@@ -7,7 +7,7 @@ use axum::{
 use caldav_utils::{
     caldav::client::{DavClient, DavCredentials},
 };
-use scheduling_api::{get_now, request_availability, state::CaldavAvailability};
+use scheduling_api::{get_now, request_availability, request_booking, state::CaldavAvailability};
 use std::net::SocketAddr;
 use tower_http::services::ServeDir;
 
@@ -52,6 +52,7 @@ async fn scheduler_api(caldav_state: CaldavAvailability, dir: String) -> Result<
         .route("/now", get(get_now))
         // POST since JS doesn't support body in GET
         .route("/availability", post(request_availability))
+        .route("/reserve", post(request_booking))
         .route("/health", get(health))
         .with_state(caldav_state)
         .layer(cors)

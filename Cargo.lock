@@ -21,6 +21,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "anyhow"
+version = "1.0.68"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2cb2f989d18dd141ab8ae82f64d1a8cdd37e0840f73a406896cf5e99502fab61"
+
+[[package]]
 name = "api"
 version = "0.1.0"
 dependencies = [
@@ -148,8 +154,10 @@ checksum = "dfb24e866b15a1af2a1b663f10c6b6b8f397a84aadb828f12e5b289ec23a3a3c"
 
 [[package]]
 name = "caldav-utils"
-version = "0.4.0"
+version = "0.6.0"
+source = "git+https://github.com/justinrubek/calendar-scheduler?tag=0.6.0#01d88113cf60ec37b2502fd31137e60ce5fa91e8"
 dependencies = [
+ "anyhow",
  "chrono",
  "chrono-tz 0.8.1",
  "http",
@@ -1456,17 +1464,16 @@ dependencies = [
 
 [[package]]
 name = "scheduling-api"
-version = "0.4.0"
+version = "0.6.0"
+source = "git+https://github.com/justinrubek/calendar-scheduler?tag=0.6.0#01d88113cf60ec37b2502fd31137e60ce5fa91e8"
 dependencies = [
  "axum",
  "caldav-utils",
  "chrono",
- "chrono-tz 0.8.1",
  "icalendar",
  "reqwest",
  "serde",
  "serde_json",
- "serde_with",
  "thiserror",
  "tokio",
  "tower",

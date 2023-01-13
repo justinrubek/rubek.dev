@@ -5,8 +5,8 @@ edition = "2021"
 
 [dependencies]
 axum = "0.6.1"
-scheduling-api = { path = "../../../calendar-scheduler/crates/scheduling-api" }
-caldav-utils = { path = "../../../calendar-scheduler/crates/caldav-utils" }
+scheduling-api = { git = "https://github.com/justinrubek/calendar-scheduler", tag = "0.6.0" }
+caldav-utils = { git = "https://github.com/justinrubek/calendar-scheduler", tag = "0.6.0" }
 # clap = { version = "4.0.19", features = ["derive"] }
 # reqwest = { version = "0.11.12", features = ["rustls-tls"] }
 serde = { version = "1", features = ["derive"] }
