@@ -131,22 +131,39 @@
         }).flat(2);
     }
 
-    onMount(() => {
-        // Determine the bounds of the month
-        let start = dayjs().startOf('month');
-        let end = roundDate(1800, dayjs().endOf('month'));
+    function getCalendarAvailability() {
+        /* Get the availability to show for the calendar
+           limits:
+            - Nothing within the next 3 days
+            - Nothing after 2 months
 
-        scheduleApi
+            These restrictions prevent the need to reload the availability data,
+            but also prevent the user from booking too far in advance or a time that is too soon.
+            This would need to be matched with the backend to prevent booking too far in advance,
+            but the consequences of this are not that severe-- for now, if someone goes to the trouble of
+            manually booking a time within the next 3 days, then maybe they are worthy of a meeting.
+        */
+        const now = dayjs();
+        const start = now.add(3, 'day').startOf('day');
+        let end = now.add(2, 'month').endOf('month');
+        end = roundDate(1800, end);
+
+        return scheduleApi
             .url('/availability')
             .post({
                 start: start.toISOString(),
                 end: end.toISOString(),
             })
-            .json(process_availability)
-            .then(calendar => {
+            .json(json => {
+                let calendar = process_availability(json);
+
                 datestore.setMarkedDates(markDates(calendar));
                 scheduleStore.updateAvailability(calendar);
-            })
+            });
+    }
+
+    onMount(() => {
+        getCalendarAvailability();
     })
 
     let eventName = 'Meeting with ';
