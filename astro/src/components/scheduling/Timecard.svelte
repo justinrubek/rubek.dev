@@ -9,5 +9,4 @@
         return time.format('h:mm A');
     }
 </script>
-
 <li on:click={() => selectTime(start, end)}>{displayTime(start)} - {displayTime(end)}</li>

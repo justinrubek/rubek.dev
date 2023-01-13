@@ -15,22 +15,9 @@ export interface ScheduleStore {
     availability: CalendarAvailability;
 
     // functions
-    getState: () => any;
     updateAvailability: (availability: CalendarAvailability) => void;
     getDayAvailability: (date: Date) => Day;
 }
-
-function timeslots(avail: CalendarAvailability, date: Date): Array<TimeRange> {
-    console.log('getDayAvailability', date);
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const day = date.getDate();
-    console.log('getDayAvailability', year, month, day);
-    const { availability } = this.getState();
-    console.log('getDayAvailability', availability);
-    return availability[year][month][day];
-}
-
 
 const defaultState = {
     availability: {},
@@ -49,9 +36,6 @@ export const get = ({
         set,
         update,
         availability,
-		getState() {
-			return getFromStore({ subscribe });
-		},
         updateAvailability: (availability: CalendarAvailability) => {
             update((state) => {
                 return { ...state, availability };
