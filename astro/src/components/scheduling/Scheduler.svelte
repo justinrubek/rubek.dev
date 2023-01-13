@@ -90,10 +90,8 @@
         const times = [];
         for (let i = 0; i < ranges.length; i++) {
             const [start_index, end_index] = ranges[i];
-            const start_time = dayjs(start, 'HH:mm').add(start_index * granularity, 'seconds');
-            let end_time = roundDate(30, dayjs(start, 'HH:mm').add(end_index * granularity, 'seconds'));
-
-
+            const start_time = dayjs(start, 'HH:mm').add((start_index-1) * granularity, 'seconds');
+            let end_time = roundDate(30, dayjs(start, 'HH:mm').add((end_index-1) * granularity, 'seconds'));
 
             times.push([start_time, end_time]);
         }
