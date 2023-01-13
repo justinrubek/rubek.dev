@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { getContext } from 'svelte'
+    import { getContext, createEventDispatcher } from 'svelte'
 
     import { contextKey } from './store';
     import Timecard from './Timecard.svelte';
@@ -9,8 +9,11 @@
     export let selected;
     export let selectedTimeslots;
 
-    export let selectTime = (start, end) => {
+    const dispatch = createEventDispatcher();
+
+    function selectTime(start, end) {
         console.log('selectTime', start, end);
+        dispatch('selectTime', { start, end });
     }
 </script>
 {#if selectedTimeslots.length > 0}

@@ -5,6 +5,17 @@
 
     import Timepicker from "./Timepicker.svelte"
     import { contextKey, dateContextKey, get as getStore } from './store';
+    import { api as scheduleApi } from './api';
+
+    // round to the nearest minutes
+    function roundDate(granularity, date) {
+        const ms = 1000 * granularity;
+        let dateMs = date.toDate().getTime();
+
+        const newDate = new Date(Math.round(dateMs / ms) * ms);
+        const newDay = dayjs(newDate);
+        return newDay;
+    }
 
     function timeslots(availability: CalendarAvailability, date: Date): Array<TimeRange> {
         if (date == null || availability == null) {
@@ -51,6 +62,7 @@
 
     function process_availability(availability) {
         const { start, end, matrix, granularity } = availability;
+
         // start - a string representing the start time of the time range for matrix
         // end - a string representing the end time of the time range for matrix
         // granularity (not in this example) - a string representing the granularity of the matrix (in seconds). Assume it is 30 minutes
@@ -79,7 +91,10 @@
         for (let i = 0; i < ranges.length; i++) {
             const [start_index, end_index] = ranges[i];
             const start_time = dayjs(start, 'HH:mm').add(start_index * granularity, 'seconds');
-            const end_time = dayjs(start, 'HH:mm').add(end_index * granularity, 'seconds');
+            let end_time = roundDate(30, dayjs(start, 'HH:mm').add(end_index * granularity, 'seconds'));
+
+
+
             times.push([start_time, end_time]);
         }
         // pretty-print
@@ -121,26 +136,37 @@
     onMount(() => {
         // Determine the bounds of the month
         let start = dayjs().startOf('month');
-        let end = dayjs().endOf('month');
+        let end = roundDate(1800, dayjs().endOf('month'));
 
-        fetch('http://localhost:8000/availability', {
-            method: 'POST',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
+        scheduleApi
+            .url('/availability')
+            .post({
                 start: start.toISOString(),
                 end: end.toISOString(),
             })
-        })
-        .then(response => response.json())
-        .then(process_availability)
-        .then(calendar => {
-            datestore.setMarkedDates(markDates(calendar));
-            scheduleStore.updateAvailability(calendar);
-        })
+            .json(process_availability)
+            .then(calendar => {
+                datestore.setMarkedDates(markDates(calendar));
+                scheduleStore.updateAvailability(calendar);
+            })
     })
+
+    let eventName = 'Meeting with ';
+
+    const selectTime = (event) => {
+        const { start, end } = event.detail;
+        // pad the en
+        console.log('selectTime', start, end);
+        scheduleApi
+            .url('/reserve')
+            .post({
+                start: start.toISOString(),
+                end: end.toISOString(),
+                name: eventName,
+            })
+    }
+
 </script>
 <Datepicker {theme} bind:selected bind:store={datestore} />
-<Timepicker {selected} {selectedTimeslots} />
+<input type="text" bind:value={eventName} />
+<Timepicker {selected} {selectedTimeslots} on:selectTime={selectTime} />

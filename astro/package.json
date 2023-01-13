@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "@justinrubek/svelte-calendar": "file:/home/justin/projects/svelte-calendar/package",
-    "dayjs": "^1.11.7"
+    "dayjs": "^1.11.7",
+    "wretch": "^2.3.1"
   }
 }
