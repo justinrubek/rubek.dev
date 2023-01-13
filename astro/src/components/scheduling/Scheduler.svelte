@@ -165,6 +165,18 @@
     }
 
 </script>
-<Datepicker {theme} bind:selected bind:store={datestore} />
-<input type="text" bind:value={eventName} />
-<Timepicker {selected} {selectedTimeslots} on:selectTime={selectTime} />
+<style>
+.layout {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding-left: 10px;
+}
+</style>
+
+<div class="flex px-5">
+    <Datepicker format={"YYYY/MM/DD"} {theme} bind:selected bind:store={datestore} />
+    <div class="layout">
+        <Timepicker {selected} {selectedTimeslots} on:selectTime={selectTime} />
+    </div>
+</div>
