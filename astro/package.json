@@ -8,7 +8,7 @@
     "build": "astro build",
     "check": "astro check",
     "preview": "astro preview",
-    "postbuild": "cli search-index ./src/pages/posts > ./public/search-index.json"
+    "postbuild": "nix run .#cli -- search-index ./src/pages/posts > ./public/search-index.json"
   },
   "devDependencies": {
     "@astrojs/mdx": "^0.12.1",
