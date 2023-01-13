@@ -154,8 +154,8 @@ checksum = "dfb24e866b15a1af2a1b663f10c6b6b8f397a84aadb828f12e5b289ec23a3a3c"
 
 [[package]]
 name = "caldav-utils"
-version = "0.6.0"
-source = "git+https://github.com/justinrubek/calendar-scheduler?tag=0.6.0#01d88113cf60ec37b2502fd31137e60ce5fa91e8"
+version = "0.6.2"
+source = "git+https://github.com/justinrubek/calendar-scheduler?tag=0.6.2#a9a87edd47f1e79eea5481a07f0d6667a54687bc"
 dependencies = [
  "anyhow",
  "chrono",
@@ -1464,8 +1464,8 @@ dependencies = [
 
 [[package]]
 name = "scheduling-api"
-version = "0.6.0"
-source = "git+https://github.com/justinrubek/calendar-scheduler?tag=0.6.0#01d88113cf60ec37b2502fd31137e60ce5fa91e8"
+version = "0.6.2"
+source = "git+https://github.com/justinrubek/calendar-scheduler?tag=0.6.2#a9a87edd47f1e79eea5481a07f0d6667a54687bc"
 dependencies = [
  "axum",
  "caldav-utils",
