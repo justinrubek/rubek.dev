@@ -17,7 +17,7 @@
     }
 </script>
 {#if selectedTimeslots.length > 0}
-    <ul>
+    <ul role="list">
         {#each selectedTimeslots as timeslot}
             <Timecard {selectTime} start={timeslot[0]} end={timeslot[1]} />
         {/each}
