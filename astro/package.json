@@ -32,7 +32,7 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
-    "@justinrubek/svelte-calendar": "file:/home/justin/projects/svelte-calendar/package",
+    "@justinrubek/svelte-calendar": "3.2.0-dev1",
     "dayjs": "^1.11.7",
     "wretch": "^2.3.1"
   }
