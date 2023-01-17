@@ -4,9 +4,7 @@ use axum::{
     routing::{get, get_service, post},
     Router,
 };
-use caldav_utils::{
-    caldav::client::{DavClient, DavCredentials},
-};
+use caldav_utils::caldav::client::{DavClient, DavCredentials};
 use scheduling_api::{get_now, request_availability, request_booking, state::CaldavAvailability};
 use std::net::SocketAddr;
 use tower_http::services::ServeDir;
@@ -39,7 +37,10 @@ async fn main() {
     scheduler_api(caldav_state, dir).await.unwrap();
 }
 
-async fn scheduler_api(caldav_state: CaldavAvailability, dir: String) -> Result<(), Box<dyn std::error::Error>> {
+async fn scheduler_api(
+    caldav_state: CaldavAvailability,
+    dir: String,
+) -> Result<(), Box<dyn std::error::Error>> {
     let port = std::env::var("PORT")
         .ok()
         .and_then(|it| it.parse().ok())
@@ -67,7 +68,6 @@ async fn scheduler_api(caldav_state: CaldavAvailability, dir: String) -> Result<
 
     Ok(())
 }
-
 
 async fn health() -> &'static str {
     "OK"
