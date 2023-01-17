@@ -66,10 +66,6 @@
     $: selectedTimeslots = timeslots(schedule_availability, selected);
     $: markedDates = getRoughAvailability(schedule_availability);
 
-    const { dark: theme } = themes;
-    theme.calendar.width = '500px';
-    // theme.calendar.maxWidth = '20vw';
-
     function process_availability(availability) {
         const { start, end, matrix, granularity } = availability;
 
@@ -206,7 +202,6 @@
         bind:markedDates
         format="yyyy/MM/dd"
         placeholder="Select a date"
-        on:select={console.log}
     />
     <div class="layout">
         <Timepicker {selected} {selectedTimeslots} on:selectTime={selectTime} />
