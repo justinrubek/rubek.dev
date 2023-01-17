@@ -166,10 +166,22 @@
                 scheduleStore.updateAvailability(calendar);
             });
     }
-
+    
+    // Fancy-pancy animation
+    let deg = 0;
     onMount(() => {
         getCalendarAvailability();
-    })
+
+        const interval = setInterval(() => {
+            deg += 2;
+            if (deg >= 360) deg = 0;
+            document.body.style.setProperty('--deg', deg);
+        }, 60);
+
+        return () => {
+            clearInterval(interval);
+        };
+    });
 
     let eventName = 'Meeting with ';
 
@@ -193,6 +205,11 @@
     flex-direction: column;
     height: 100vh;
     padding-left: 10px;
+}
+
+:global(body) {
+    --date-picker-marked-background: #7e22ce;
+    --date-picker-marked-border: hsl(var(--deg), 98%, 49%);
 }
 </style>
 
