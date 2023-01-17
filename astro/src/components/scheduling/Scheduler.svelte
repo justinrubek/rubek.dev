@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount, setContext } from 'svelte'
-    import { Datepicker, themes } from '@justinrubek/svelte-calendar'
+    import { DateInput } from '@justinrubek/date-picker-svelte'
     import dayjs from 'dayjs'
 
     import Timepicker from "./Timepicker.svelte"
@@ -48,13 +48,23 @@
         return slots;
     }
 
-    let datestore;
+    function getRoughAvailability(availability: CalendarAvailability): Record<string, Record<string, Array<string>>> {
+        return Object.entries(availability).reduce((acc, [year, months]) => {
+            acc[year] = Object.entries(months).reduce((acc, [month, days]) => {
+                acc[month] = Object.keys(days);
+                return acc;
+            }, {});
+            return acc;
+        }, {});
+    }
+
     let selected;
 
     export let scheduleStore = getStore();
     setContext(scheduleStore.contextKey, scheduleStore);
     $: schedule_availability = $scheduleStore.availability;
     $: selectedTimeslots = timeslots(schedule_availability, selected);
+    $: markedDates = getRoughAvailability(schedule_availability);
 
     const { dark: theme } = themes;
     theme.calendar.width = '500px';
@@ -157,7 +167,6 @@
             .json(json => {
                 let calendar = process_availability(json);
 
-                datestore.setMarkedDates(markDates(calendar));
                 scheduleStore.updateAvailability(calendar);
             });
     }
@@ -192,7 +201,13 @@
 </style>
 
 <div class="flex px-5">
-    <Datepicker format={"YYYY/MM/DD"} {theme} bind:selected bind:store={datestore} />
+    <DateInput 
+        bind:value={selected}
+        bind:markedDates
+        format="yyyy/MM/dd"
+        placeholder="Select a date"
+        on:select={console.log}
+    />
     <div class="layout">
         <Timepicker {selected} {selectedTimeslots} on:selectTime={selectTime} />
     </div>
