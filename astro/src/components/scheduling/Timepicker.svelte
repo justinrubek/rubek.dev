@@ -7,7 +7,8 @@
     const scheduleStore = getContext(contextKey);
 
     export let selected;
-    export let selectedTimeslots;
+    export let availability = {};
+    $: selectedTimeslots = timeslots(availability, selected);
 
     const dispatch = createEventDispatcher();
 
@@ -15,6 +16,38 @@
         console.log('selectTime', start, end);
         dispatch('selectTime', { start, end });
     }
+
+    function timeslots(availability: CalendarAvailability, date: Date): Array<TimeRange> {
+        if (date == null || availability == null) {
+            return [];
+        }
+        const year = date.getFullYear();
+        const month = date.getMonth();
+        const day = date.getDate();
+
+        // all open ranges of time in the day
+        let ranges = availability?.[year]?.[month]?.[day];
+
+        if (ranges == null) {
+            return [];
+        }
+
+        // Divide each range into 30 minute slots
+        const granularity = 30;
+        let slots = [];
+        for (let range of ranges) {
+            let start = range[0];
+            let end = range[1];
+            while (start < end) {
+                let newStart = start.add(granularity, 'minute');
+                slots.push([start, newStart]);
+                start = newStart;
+            }
+        }
+
+        return slots;
+    }
+
 </script>
 <style>
 .text {

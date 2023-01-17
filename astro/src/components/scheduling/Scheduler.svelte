@@ -4,7 +4,6 @@
     import dayjs from 'dayjs'
 
     import Timepicker from "./Timepicker.svelte"
-    import { contextKey, dateContextKey, get as getStore } from './store';
     import { api as scheduleApi } from './api';
 
     // round to the nearest minutes
@@ -15,37 +14,6 @@
         const newDate = new Date(Math.round(dateMs / ms) * ms);
         const newDay = dayjs(newDate);
         return newDay;
-    }
-
-    function timeslots(availability: CalendarAvailability, date: Date): Array<TimeRange> {
-        if (date == null || availability == null) {
-            return [];
-        }
-        const year = date.getFullYear();
-        const month = date.getMonth();
-        const day = date.getDate();
-
-        // all open ranges of time in the day
-        let ranges = availability?.[year]?.[month]?.[day];
-
-        if (ranges == null) {
-            return [];
-        }
-
-        // Divide each range into 30 minute slots
-        const granularity = 30;
-        let slots = [];
-        for (let range of ranges) {
-            let start = range[0];
-            let end = range[1];
-            while (start < end) {
-                let newStart = start.add(granularity, 'minute');
-                slots.push([start, newStart]);
-                start = newStart;
-            }
-        }
-
-        return slots;
     }
 
     function getRoughAvailability(availability: CalendarAvailability): Record<string, Record<string, Array<string>>> {
@@ -59,12 +27,6 @@
     }
 
     let selected;
-
-    export let scheduleStore = getStore();
-    setContext(scheduleStore.contextKey, scheduleStore);
-    $: schedule_availability = $scheduleStore.availability;
-    $: selectedTimeslots = timeslots(schedule_availability, selected);
-    $: markedDates = getRoughAvailability(schedule_availability);
 
     function process_availability(availability) {
         const { start, end, matrix, granularity } = availability;
@@ -127,16 +89,6 @@
         return calendar;
     }
 
-    function markDates(calendar_availability) {
-        return Object.keys(calendar_availability).map(year => {
-            return Object.keys(calendar_availability[year]).map(month => {
-                return Object.keys(calendar_availability[year][month]).map(day => {
-                    return new Date(year, month, day);
-                });
-            });
-        }).flat(2);
-    }
-
     function getCalendarAvailability() {
         /* Get the availability to show for the calendar
            limits:
@@ -160,18 +112,12 @@
                 start: start.toISOString(),
                 end: end.toISOString(),
             })
-            .json(json => {
-                let calendar = process_availability(json);
-
-                scheduleStore.updateAvailability(calendar);
-            });
+            .json(process_availability);
     }
     
-    // Fancy-pancy animation
+    // Fancy animation
     let deg = 0;
     onMount(() => {
-        getCalendarAvailability();
-
         const interval = setInterval(() => {
             deg += 2;
             if (deg >= 360) deg = 0;
@@ -207,20 +153,30 @@
     padding-left: 10px;
 }
 
+.text {
+    @apply text-theme-primary dark:text-theme-dark-primary;
+}
+
 :global(body) {
     --date-picker-marked-background: #7e22ce;
     --date-picker-marked-border: hsl(var(--deg), 98%, 49%);
 }
 </style>
 
-<div class="flex px-5">
-    <DateInput 
-        bind:value={selected}
-        bind:markedDates
-        format="yyyy/MM/dd"
-        placeholder="Select a date"
-    />
-    <div class="layout">
-        <Timepicker {selected} {selectedTimeslots} on:selectTime={selectTime} />
+{#await getCalendarAvailability()}
+    <p class="text">loading availability...</p>
+{:then calendar_availability}
+    <div class="flex px-5">
+        <DateInput 
+            bind:value={selected}
+            markedDates={getRoughAvailability(calendar_availability)}
+            format="yyyy/MM/dd"
+            placeholder="Select a date"
+        />
+        <div class="layout">
+            <Timepicker {selected} availability={calendar_availability} on:selectTime={selectTime} />
+        </div>
     </div>
-</div>
+{:catch error}
+    <p class="text">{error.message}</p>
+{/await}
