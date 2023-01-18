@@ -13,7 +13,6 @@
     const dispatch = createEventDispatcher();
 
     function selectTime(start, end) {
-        console.log('selectTime', start, end);
         dispatch('selectTime', { start, end });
     }
 
