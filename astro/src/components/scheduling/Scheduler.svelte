@@ -120,15 +120,17 @@
     {#if selectedTimeslot}
         <div class="layout" transition:slide="{{ delay: 200, duration: 300, easing: quintOut }}">
             <p class="text">Schedule a meeting from {selectedTimeslot.start.format('h:mm A')} to {selectedTimeslot.end.format('h:mm A')}</p>
+
             <label class="text" for="email">email</label>
             <input bind:value={email} class="w-full" name="email" id="email" />
             <label class="text" for="name">subject</label>
             <input bind:value={eventName} class="w-full" name="name" id="name" />
             <label class="text" for="description">description</label>
             <textarea bind:value={description} class="w-full" name="description" id="description" />
+
             <div class="buttonContainer">
-                <button class="reserveButton" on:click={() => reserveTimeslot(selectedTimeslot, email, eventName, description)}>Reserve</button>
-                <button class="cancelButton" on:click={cancelSelection}>Cancel</button>
+                <button name="reserve" class="reserveButton" on:click={() => reserveTimeslot(selectedTimeslot, email, eventName, description)}>Reserve</button>
+                <button name="cancel" class="cancelButton" on:click={cancelSelection}>Cancel</button>
             </div>
         </div>
     {/if}
