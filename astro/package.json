@@ -34,6 +34,7 @@
   "dependencies": {
     "@justinrubek/date-picker-svelte": "2.3.0-dev2",
     "dayjs": "^1.11.7",
+    "svelte-forms-lib": "^2.0.1",
     "wretch": "^2.3.1"
   }
 }

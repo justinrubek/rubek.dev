@@ -3,6 +3,7 @@
     import { slide } from 'svelte/transition'
     import { quintOut } from 'svelte/easing';
     import { DateInput } from '@justinrubek/date-picker-svelte'
+    import { createForm } from 'svelte-forms-lib'
     import dayjs from 'dayjs'
 
     import Timepicker from "./Timepicker.svelte"
@@ -14,6 +15,7 @@
         getCalendarAvailability,
     } from './util';
 
+    // The current selected calendar day 
     let selected;
 
     // Fancy animation
@@ -30,23 +32,19 @@
         };
     });
 
-    let eventName = '';
-    let email = '';
-    let description = '';
-
+    // Individual day time selection
     let selectedTimeslot = null;
     const selectTime = (event) => {
         const { start, end } = event.detail;
         selectedTimeslot = { start, end };
     }
-
     const cancelSelection = () => {
         selectedTimeslot = null;
     }
 
-    const reserveTimeslot = (slot, email, name, description) => {
+    const reserveTimeslot = async (slot, email, name, description) => {
         const { start, end } = slot;
-        scheduleApi
+        return scheduleApi
             .url('/reserve')
             .post({
                 start: start.toISOString(),
@@ -56,6 +54,39 @@
                 description,
             })
     }
+
+    const { form, errors, state, handleChange, handleSubmit } = createForm({
+        initialValues: {
+            email: "",
+            subject: "",
+            description: "",
+        },
+
+        validate: values => {
+            const errors = {};
+
+            if (!values.email) {
+                errors.email = "Required";
+            }
+
+            if (!values.subject) {
+                errors.subject = "Required";
+            }
+
+            if (!values.description) {
+                errors.description = "Required";
+            }
+
+            return errors;
+        },
+
+        onSubmit: async values => {
+            reserveTimeslot(selectedTimeslot, values.email, values.subject, values.description)
+                .then(cancelSelection)
+                .catch(console.error)
+        }
+    });
+
 
 </script>
 <style>
@@ -68,6 +99,10 @@
 
 .text {
     @apply text-theme-primary dark:text-theme-dark-primary;
+}
+
+.text-error {
+    color: red;
 }
 
 .cancelButton {
@@ -105,33 +140,64 @@
 {#await getCalendarAvailability()}
     <p class="text">loading availability...</p>
 {:then calendar_availability}
-    <div class="flex px-5">
-        <DateInput 
-            bind:value={selected}
-            markedDates={getRoughAvailability(calendar_availability)}
-            format="yyyy/MM/dd"
-            placeholder="Select a date"
-            closeOnSelection={true}
-            on:select={cancelSelection}
-        />
-        <div class="layout">
+    <div
+        class="flex flex-wrap px-5"
+    >
+        <div
+            class="min-w-fit"
+        >
+            <DateInput 
+                bind:value={selected}
+                markedDates={getRoughAvailability(calendar_availability)}
+                format="yyyy/MM/dd"
+                placeholder="Select a date"
+                closeOnSelection={true}
+                on:select={cancelSelection}
+            />
             <Timepicker {selected} availability={calendar_availability} on:selectTime={selectTime} />
         </div>
     {#if selectedTimeslot}
-        <div class="layout" transition:slide="{{ delay: 200, duration: 300, easing: quintOut }}">
-            <p class="text">Schedule a meeting from {selectedTimeslot.start.format('h:mm A')} to {selectedTimeslot.end.format('h:mm A')}</p>
+        <div 
+            class="w-3/4 pt-5 md:pl-5 flex flex-wrap"
+            transition:slide="{{ delay: 200, duration: 300, easing: quintOut }}"
+        >
+            <form on:submit={handleSubmit}>
+                <p class="text">Schedule a meeting from {selectedTimeslot.start.format('h:mm A')} to {selectedTimeslot.end.format('h:mm A')}</p>
 
-            <label class="text" for="email">email</label>
-            <input bind:value={email} class="w-full" name="email" id="email" />
-            <label class="text" for="name">subject</label>
-            <input bind:value={eventName} class="w-full" name="name" id="name" />
-            <label class="text" for="description">description</label>
-            <textarea bind:value={description} class="w-full" name="description" id="description" />
+                <label class="text" for="email">email</label>
+                <input 
+                    bind:value={$form.email} on:change={handleChange}
+                    class="w-full"
+                    name="email" id="email" 
+                />
+                {#if $errors.email}
+                    <p class="text-error">{$errors.email}</p>
+                {/if}
+                <label class="text" for="name">subject</label>
+                <input 
+                    bind:value={$form.subject} on:change={handleChange}
+                    class="w-full"
+                    name="subject" id="subject"
+                />
+                {#if $errors.subject}
+                    <p class="text-error">{$errors.subject}</p>
+                {/if}
+                <label class="text" for="description">description</label>
+                <textarea
+                    bind:value={$form.description} on:change={handleChange}
+                    class="w-full"
+                    name="description"
+                    id="description"
+                />
+                {#if $errors.description}
+                    <p class="text-error">{$errors.description}</p>
+                {/if}
 
-            <div class="buttonContainer">
-                <button name="reserve" class="reserveButton" on:click={() => reserveTimeslot(selectedTimeslot, email, eventName, description)}>Reserve</button>
-                <button name="cancel" class="cancelButton" on:click={cancelSelection}>Cancel</button>
-            </div>
+                <div class="flex justify-between pt-2">
+                    <button type="submit" name="reserve" class="reserveButton">Reserve</button>
+                    <button name="cancel" class="cancelButton" on:click={cancelSelection}>Cancel</button>
+                </div>
+            </form>
         </div>
     {/if}
     </div>

@@ -9,7 +9,7 @@ module.exports = {
     darkMode: 'class',
     content: [
         './public/**/*.html',
-        './src/**/*.{astro,js,ts}'
+        './src/**/*.{astro,js,ts,svelte}'
     ],
     safelist: ['dark'],
     theme: {
