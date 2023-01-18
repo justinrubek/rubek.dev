@@ -195,7 +195,7 @@
 
                 <div class="flex justify-between pt-2">
                     <button type="submit" name="reserve" class="reserveButton">Reserve</button>
-                    <button name="cancel" class="cancelButton" on:click={cancelSelection}>Cancel</button>
+                    <button type="button" name="cancel" class="cancelButton" on:click={cancelSelection}>Cancel</button>
                 </div>
             </form>
         </div>
