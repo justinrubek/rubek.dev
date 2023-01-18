@@ -112,6 +112,7 @@
             format="yyyy/MM/dd"
             placeholder="Select a date"
             closeOnSelection={true}
+            on:select={cancelSelection}
         />
         <div class="layout">
             <Timepicker {selected} availability={calendar_availability} on:selectTime={selectTime} />
