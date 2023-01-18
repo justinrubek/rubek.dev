@@ -15,6 +15,9 @@
         getCalendarAvailability,
     } from './util';
 
+    // marker to indicate that the user has successfully booked an appointment
+    let booked = null;
+
     // The current selected calendar day 
     let selected;
 
@@ -44,7 +47,7 @@
 
     const reserveTimeslot = async (slot, email, name, description) => {
         const { start, end } = slot;
-        return scheduleApi
+        scheduleApi
             .url('/reserve')
             .post({
                 start: start.toISOString(),
@@ -52,7 +55,8 @@
                 name,
                 email,
                 description,
-            })
+            });
+        return slot;
     }
 
     const { form, errors, state, handleChange, handleSubmit } = createForm({
@@ -82,7 +86,10 @@
 
         onSubmit: async values => {
             reserveTimeslot(selectedTimeslot, values.email, values.subject, values.description)
-                .then(cancelSelection)
+                .then(() => {
+                    booked = selectedTimeslot;
+                    cancelSelection();
+                })
                 .catch(console.error)
         }
     });
@@ -137,6 +144,13 @@
 }
 </style>
 
+{#if booked}
+    <div class="layout">
+        <div class="text">
+            <p>You've successfully booked a meeting on {dayjs(booked.start).format('MMMM D, YYYY')} from {dayjs(booked.start).format('h:mm A')} to {dayjs(booked.end).format('h:mm A')}</p>
+        </div>
+    </div>
+{:else}
 {#await getCalendarAvailability()}
     <p class="text">loading availability...</p>
 {:then calendar_availability}
@@ -204,3 +218,4 @@
 {:catch error}
     <p class="text">{error.message}</p>
 {/await}
+{/if}
