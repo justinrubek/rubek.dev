@@ -7,8 +7,7 @@
     "start": "astro dev",
     "build": "astro build",
     "check": "astro check",
-    "preview": "astro preview",
-    "postbuild": "nix run .#cli -- search-index ./src/pages/posts > ./public/search-index.json"
+    "preview": "astro preview"
   },
   "devDependencies": {
     "@astrojs/mdx": "^0.12.1",
@@ -29,12 +28,12 @@
     "mdx": "^0.3.1",
     "svelte": "^3.50.0",
     "tailwindcss": "^3.0.24",
-    "typescript": "^4.3.5"
-  },
-  "dependencies": {
+    "typescript": "^4.3.5",
     "@rubekpkgs/date-picker-svelte": "^2.3.0-dev2",
     "dayjs": "^1.11.7",
     "svelte-forms-lib": "^2.0.1",
     "wretch": "^2.3.1"
+  },
+  "dependencies": {
   }
 }
