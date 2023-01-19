@@ -132,6 +132,22 @@
       server_script = pkgs.writeShellScriptBin "start_server" ''
         ${api-package}/bin/api ${self'.packages.site}
       '';
+
+      "server/image" = pkgs.dockerTools.buildImage {
+        name = "rubek.dev";
+        tag = self.rev or "dirty";
+        created = "now";
+
+        copyToRoot = pkgs.buildEnv {
+          name = "image-root";
+          paths = [
+            self'.packages.server_script
+          ];
+          pathsToLink = ["/bin"];
+        };
+
+        config.Cmd = ["/bin/start_server"];
+      };
     };
 
     apps = {
