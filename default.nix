@@ -129,7 +129,8 @@
         mkdir -p $out/bin
         cp ${api-package}/bin/api $out/bin
       '';
-      server_script = pkgs.writeShellScriptBin "start_server" ''
+
+      "server/script" = pkgs.writeShellScriptBin "start_server" ''
         ${api-package}/bin/api ${self'.packages.site}
       '';
 
