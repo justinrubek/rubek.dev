@@ -94,6 +94,7 @@
       pkgs.cocogitto
       inputs'.bomper.packages.cli
       # misc
+      pkgs.skopeo
 
       # self'.packages.cli
     ];
