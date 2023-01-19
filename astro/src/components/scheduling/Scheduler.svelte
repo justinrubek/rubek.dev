@@ -2,7 +2,7 @@
     import { onMount, setContext } from 'svelte'
     import { slide } from 'svelte/transition'
     import { quintOut } from 'svelte/easing';
-    import { DateInput } from '@justinrubek/date-picker-svelte'
+    import { DateInput } from '@rubekpkgs/date-picker-svelte'
     import { createForm } from 'svelte-forms-lib'
     import dayjs from 'dayjs'
 
