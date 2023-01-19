@@ -143,12 +143,12 @@
         copyToRoot = pkgs.buildEnv {
           name = "image-root";
           paths = [
-            self'.packages.server_script
+            self'.packages.server
           ];
-          pathsToLink = ["/bin"];
+          pathsToLink = ["/bin" "/public"];
         };
 
-        config.Cmd = ["/bin/start_server"];
+        config.Cmd = ["/bin/api" "/public"];
       };
     };
 
