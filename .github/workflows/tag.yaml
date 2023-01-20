@@ -11,6 +11,12 @@ jobs:
         id: get_version
         uses: battila7/get-version-action@v2
 
+      - name: Install nix
+        uses: cachix/install-nix-action@v15
+        with:
+          extra_nix_config: |
+            access-tokens = github=${{ secrets.GITHUB_TOKEN }}
+
       - name: build image
         run: nix build .#server/image
 
