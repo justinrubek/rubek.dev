@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [0.2.6](https://github.com/justinrubek/rubek.dev/compare/0.2.5..0.2.6) - 2023-01-20
+#### Features
+- display timezone next to selection form - ([1ad053e](https://github.com/justinrubek/rubek.dev/commit/1ad053e92d586d5fae11cd39f380fa1efb933e08)) - [@justinrubek](https://github.com/justinrubek)
+#### Miscellaneous Chores
+- remove header logo - ([bdb438a](https://github.com/justinrubek/rubek.dev/commit/bdb438abd805a119a33ae88593f8b2474db96c10)) - [@justinrubek](https://github.com/justinrubek)
+
+- - -
+
 ## [0.2.5](https://github.com/justinrubek/rubek.dev/compare/0.2.4..0.2.5) - 2023-01-20
 #### Continuous Integration
 - fix login to docker hub - ([61d1aa3](https://github.com/justinrubek/rubek.dev/commit/61d1aa37184d8c6be5fa48ea0adbc5982434ab96)) - [@justinrubek](https://github.com/justinrubek)
