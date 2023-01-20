@@ -1,0 +1,27 @@
+name: tag
+on:
+  push:
+    tags:
+      - "*"
+jobs:
+  publish-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Determine version
+        id: get_version
+        uses: battila7/get-version-action@v2
+
+      - name: build image
+        run: nix build .#server/image
+
+      - name: login to registry
+        env:
+          USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+          PASSWORD: ${{ secrets.DOCKER_HUB_TOKEN }}
+        run: echo $PASSWORD | nix develop .#ci -c skopeo login docker.io -u $USERNAME
+
+      - name: push to docker
+        env:
+          VERSION: ${{ steps.get_version.outputs.version }}
+        run: nix develop .#ci -c skopeo copy docker-archive:result docker://justinrubek/rubek.dev:$VERSION --insecure-policy
+
