@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [0.2.2](https://github.com/justinrubek/rubek.dev/compare/0.2.1..0.2.2) - 2023-01-20
+#### Continuous Integration
+- add checkout to github actions - ([5e1604a](https://github.com/justinrubek/rubek.dev/commit/5e1604a1461f6ef2f8b8610d6028b108fd685284)) - [@justinrubek](https://github.com/justinrubek)
+
+- - -
+
 ## [0.2.1](https://github.com/justinrubek/rubek.dev/compare/0.2.0..0.2.1) - 2023-01-20
 #### Continuous Integration
 - add nix install to action - ([81ace30](https://github.com/justinrubek/rubek.dev/commit/81ace304da65b5cafa57cef82efd1eb17e458691)) - [@justinrubek](https://github.com/justinrubek)
