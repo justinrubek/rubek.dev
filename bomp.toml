@@ -9,3 +9,6 @@ search_value = "api|cli"
 
 [file."astro/package.json"]
 search_value = "rubek.dev"
+
+[file."astro/package-lock.json"]
+search_value = "rubek.dev"
