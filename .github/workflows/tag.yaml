@@ -28,7 +28,7 @@ jobs:
         env:
           USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
           PASSWORD: ${{ secrets.DOCKER_HUB_TOKEN }}
-        run: echo $PASSWORD | nix develop .#ci -c skopeo login docker.io -u $USERNAME
+        run: echo $PASSWORD | nix develop .#ci -c skopeo login docker.io -u $USERNAME --password-stdin
 
       - name: push to docker
         env:
