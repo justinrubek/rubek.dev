@@ -2,6 +2,16 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [0.2.4](https://github.com/justinrubek/rubek.dev/compare/0.2.3-dev1..0.2.4) - 2023-01-20
+#### Bug Fixes
+- winapi url - ([805d3d5](https://github.com/justinrubek/rubek.dev/commit/805d3d55784c1268b1c78b07dbce55e395e4ede8)) - [@justinrubek](https://github.com/justinrubek)
+#### Build system
+- **(npm)** npm update - ([80c844e](https://github.com/justinrubek/rubek.dev/commit/80c844e482541940ab9d9b5d2ed302c9c08787de)) - [@justinrubek](https://github.com/justinrubek)
+#### Miscellaneous Chores
+- add package-lock to bomper - ([658cee6](https://github.com/justinrubek/rubek.dev/commit/658cee6f586236f50d27d93864c0129427d032a2)) - [@justinrubek](https://github.com/justinrubek)
+
+- - -
+
 ## [0.2.3-dev1](https://github.com/justinrubek/rubek.dev/compare/0.2.2..0.2.3-dev1) - 2023-01-20
 #### Continuous Integration
 - add garnix cache to tag action - ([47b7f2e](https://github.com/justinrubek/rubek.dev/commit/47b7f2e98350cc56528dc57728d6584bbc85dfaa)) - [@justinrubek](https://github.com/justinrubek)
