@@ -110,11 +110,19 @@
     allBuildInputs = base: base ++ extraBuildInputs;
     allNativeBuildInputs = base: base ++ extraNativeBuildInputs;
   in rec {
-    devShells.default = pkgs.mkShell rec {
-      buildInputs = allBuildInputs [fenix-toolchain] ++ devTools;
-      nativeBuildInputs = allNativeBuildInputs [];
-      LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath buildInputs;
-      inherit (self.checks.${system}.pre-commit-hooks) shellHook;
+    devShells = {
+      default = pkgs.mkShell rec {
+        buildInputs = allBuildInputs [fenix-toolchain] ++ devTools;
+        nativeBuildInputs = allNativeBuildInputs [];
+        LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath buildInputs;
+        inherit (self.checks.${system}.pre-commit-hooks) shellHook;
+      };
+
+      ci = pkgs.mkShell {
+        packages = [
+          pkgs.skopeo
+        ];
+      };
     };
 
     packages = {
