@@ -138,17 +138,13 @@
       "server/image" = pkgs.dockerTools.buildImage {
         name = "rubek.dev";
         tag = self.rev or "dirty";
-        created = "now";
 
-        copyToRoot = pkgs.buildEnv {
-          name = "image-root";
-          paths = [
-            self'.packages.server
-          ];
-          pathsToLink = ["/bin" "/public"];
-        };
+        contents = [
+          self'.packages.server
+          pkgs.cacert
+        ];
 
-        config.Cmd = ["/bin/api" "/public"];
+        config.Cmd = ["${self'.packages.server}/bin/api" "/public"];
       };
     };
 
