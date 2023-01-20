@@ -176,7 +176,9 @@
             transition:slide="{{ delay: 200, duration: 300, easing: quintOut }}"
         >
             <form on:submit={handleSubmit}>
-                <p class="text">Schedule a meeting from {selectedTimeslot.start.format('h:mm A')} to {selectedTimeslot.end.format('h:mm A')}</p>
+                <p class="text">
+                    Schedule a meeting from {selectedTimeslot.start.format('h:mm A')} to {selectedTimeslot.end.format('h:mm A')} ({Intl.DateTimeFormat().resolvedOptions().timeZone})
+                </p>
 
                 <label class="text" for="email">email</label>
                 <input 
