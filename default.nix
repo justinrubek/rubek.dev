@@ -147,12 +147,12 @@
         name = "rubek.dev";
         tag = self.rev or "dirty";
 
-        contents = [
+        copyToRoot = [
           self'.packages.server
           pkgs.cacert
         ];
 
-        config.Cmd = ["${self'.packages.server}/bin/api" "/public"];
+        config.Cmd = ["/bin/api" "/public"];
       };
     };
 
