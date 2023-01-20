@@ -1,0 +1,11 @@
+[file."crates/api/Cargo.toml"]
+search_value = "api"
+
+[file."crates/cli/Cargo.toml"]
+search_value = "cli"
+
+[file."Cargo.lock"]
+search_value = "api|cli"
+
+[file."astro/package.json"]
+search_value = "rubek.dev"
