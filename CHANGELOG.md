@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [0.2.3-dev1](https://github.com/justinrubek/rubek.dev/compare/0.2.2..0.2.3-dev1) - 2023-01-20
+#### Continuous Integration
+- add garnix cache to tag action - ([47b7f2e](https://github.com/justinrubek/rubek.dev/commit/47b7f2e98350cc56528dc57728d6584bbc85dfaa)) - [@justinrubek](https://github.com/justinrubek)
+
+- - -
+
 ## [0.2.2](https://github.com/justinrubek/rubek.dev/compare/0.2.1..0.2.2) - 2023-01-20
 #### Continuous Integration
 - add checkout to github actions - ([5e1604a](https://github.com/justinrubek/rubek.dev/commit/5e1604a1461f6ef2f8b8610d6028b108fd685284)) - [@justinrubek](https://github.com/justinrubek)
