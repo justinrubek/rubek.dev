@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [0.2.5](https://github.com/justinrubek/rubek.dev/compare/0.2.4..0.2.5) - 2023-01-20
+#### Continuous Integration
+- fix login to docker hub - ([61d1aa3](https://github.com/justinrubek/rubek.dev/commit/61d1aa37184d8c6be5fa48ea0adbc5982434ab96)) - [@justinrubek](https://github.com/justinrubek)
+
+- - -
+
 ## [0.2.4](https://github.com/justinrubek/rubek.dev/compare/0.2.3-dev1..0.2.4) - 2023-01-20
 #### Bug Fixes
 - winapi url - ([805d3d5](https://github.com/justinrubek/rubek.dev/commit/805d3d55784c1268b1c78b07dbce55e395e4ede8)) - [@justinrubek](https://github.com/justinrubek)
