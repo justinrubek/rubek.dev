@@ -19,6 +19,7 @@
       source = filter {
         root = ./.;
         include = [
+          ./yarn.lock
           (inDirectory "src")
           (inDirectory "public")
           (matchExt "js")
@@ -32,7 +33,7 @@
       projects.site = {
         name = "site";
         subsystem = "nodejs";
-        translator = "package-lock";
+        translator = "yarn-lock";
       };
 
       packageOverrides.site = {
