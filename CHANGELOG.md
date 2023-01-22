@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [0.2.7](https://github.com/justinrubek/rubek.dev/compare/0.2.6..0.2.7) - 2023-01-22
+#### Features
+- **(site)** add plausible script - ([3d103cf](https://github.com/justinrubek/rubek.dev/commit/3d103cfb05ed439fed5dad1388ea7f3b7baab0aa)) - [@justinrubek](https://github.com/justinrubek)
+
+- - -
+
 ## [0.2.6](https://github.com/justinrubek/rubek.dev/compare/0.2.5..0.2.6) - 2023-01-20
 #### Features
 - display timezone next to selection form - ([1ad053e](https://github.com/justinrubek/rubek.dev/commit/1ad053e92d586d5fae11cd39f380fa1efb933e08)) - [@justinrubek](https://github.com/justinrubek)
