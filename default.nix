@@ -90,6 +90,7 @@
       pkgs.rustfmt
       # javascript tooling
       pkgs.nodejs
+      pkgs.yarn
       # version control
       pkgs.cocogitto
       inputs'.bomper.packages.cli
