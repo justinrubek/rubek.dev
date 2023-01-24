@@ -13,10 +13,16 @@ const __dirname = dirname(__filename)
 //
 
 import codeblockPlugin from './src/plugins/codeblock.mjs'
+import remarkHintPlugin from "remark-hint"
+import remarkHtmlPlugin from "remark-html"
 
 const mdxOptions = {
     remarkPlugins: [
-        [codeblockPlugin],
+        [
+            remarkHintPlugin,
+            remarkHtmlPlugin,
+            codeblockPlugin,
+        ],
     ],
 };
 
