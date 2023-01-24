@@ -1,0 +1,176 @@
+---
+layout: $/layouts/post.astro
+title: "Garnix: simple CI for nix"
+date: 2023-01-24
+category: design
+tags:
+- nix
+- garnix
+- ci/cd
+- github
+- github actions
+- devops
+description: A look at nix-first CI vs other approaches
+---
+
+# Overview
+
+I've used GitHub Actions on a lot of projects.
+It definitely has a lot going for it:
+
+- It's free
+- Almost everything I've worked on has been stored on GitHub, so it's always available and integrates well with the UI
+- There is a pretty vast ecosystem of actions that can be used
+
+However, there are also some issues that I think either make it tricky (or at least very tedious):
+
+- There is some concept of caching build artifacts, but in practice I've not seen this work well
+    - You can use a nix binary cache, but this can be slow. I regular saw a lot of the action's time be used just to download from the cache
+- Limitations on virtualization
+    - I had to remove usage of [nixos-generators](https://github.com/nix-community/nixos-generators) for creating an AWS image-- It needed KVM support which was not enabled on the provided runner
+- Self-hosted runners, without proper thought, can slow down your pipeline
+    - Without a sufficient number of them your jobs will have to wait to be ran
+        - As a result, you need some system for scaling these up yourself
+    - If you need to access private networks then you'll almost certainly need these
+        - Although I am very interested in trying [tailscale's action](https://github.com/tailscale/github-action) to work around this
+- Debugging can often result in **A LOT** of trial and error
+    - There are tools like [act](https://github.com/nektos/act), but I haven't had much luck. It isn't the same environment and you'll have to set up all the environment variables and secrets yourself. I don't consider it a proper substitute
+    - This can result in many, many extra commits and waiting for job completion. If there are other slow-running jobs (such as in a monorepo) then you can wait a really long time to find out your change was incorrect
+
+
+I don't think Actions is a bad tool, but I definitely have had a lot of my time burnt using it.
+In projects that use nix, I think embracing nix tooling is extremely valuable as a time and compute saver.
+Let's look at a few different approaches.
+
+# Approaches
+
+> **_NOTE:_** I'm not writing this assuming readers are seasoned nix users,
+however I am also not going to explain nix concepts in depth.
+It should be possible to follow along still but you may have to do further research.
+I have tried to provide links where they are applicable.
+
+## naive nix + Actions
+
+This action is simple: it installs nix and runs `nix flake check`.
+You can place any packages you need to ensure build in the flake checks, as well as tests, lints, and anything else you can think of.
+
+```yaml filename=.github/workflows/ci.yaml
+name: CI
+on: push
+
+jobs:
+  test:
+    name: tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install nix
+        uses: cachix/install-nix-action@v15
+        with:
+          extra_nix_config: |
+            access-tokens = github=${{ secrets.GITHUB_TOKEN }}
+
+      - run: nix flake check
+```
+
+However, there is a big problem with this one: it will rebuild everything each time it is ran.
+This can result in a huge time increase when building toolchains that won't change between runs.
+It's likely that there is a lot of things in the default [NixOS cache](https://cache.nixos.org/), but almost certainly not everything.
+This is especially true when working on a separate project-- the nix community isn't going to store your artifacts and you likely wouldn't want them to anyway.
+
+## nix + Actions + binary cache
+
+Okay, so the easiest next step is to introduce a binary cache.
+There are a number of cache solutions out there, but for now we'll focus on [Cachix](https://cachix.org) because:
+
+- At the time of writing, it is free for open source work
+- It is a managed service, and onboarding yourself is very fast
+
+I won't delve into them, but it is worth mentioning some other caches (which may be self-hosted):
+- [Attic](https://github.com/zhaofengli/attic) 
+- [Peerix](https://github.com/cid-chan/peerix)
+- [nix-serve](https://github.com/edolstra/nix-serve)
+- [nix-serve-ng](https://github.com/aristanetworks/nix-serve-ng)
+- roll your own
+    - [with s3](https://fzakaria.com/2020/07/16/setting-up-a-nix-s3-binary-cache.html)
+    - [with OpenAPI spec](https://fzakaria.com/2021/08/12/a-nix-binary-cache-specification.html)
+
+
+With Cachix, there is a simple action that you can use which will configure nix to pull from its cache and will upload artifacts at the end of the job. Your action just needs to add a single step:
+
+```diff filename=.github/workflows/ci.yaml
+name: CI
+on: push
+
+jobs:
+  test:
+    name: tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install nix
+        uses: cachix/install-nix-action@v15
+        with:
+          extra_nix_config: |
+            access-tokens = github=${{ secrets.GITHUB_TOKEN }}
+
++     - name: Setup nix cache
++       uses: cachix/cachix-action@v10
++       with:
++         name: justinrubek
++         authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+
+      - run: nix flake check
+```
+
+With this setup any subsequent nix commands can pull in already built derivations.
+As a bonus, the binary cache can be shared with developer machines using [`nix.settings.substituters`](https://search.nixos.org/options?channel=unstable&show=nix.settings.substituters&from=0&size=50&sort=relevance&type=packages&query=nix.settings.sub) and [`nix.settings.trusted-public-keys`](https://search.nixos.org/options?channel=unstable&show=nix.settings.trusted-public-keys&from=0&size=50&sort=relevance&type=packages&query=nix.settings.trust) ([or using `nix.conf`](https://nixos.org/manual/nix/unstable/command-ref/conf-file.html#conf-substituters) if not on NixOS).
+This means that if CI has ran then it is fairly cheap to pull the build results on other machines.
+
+One drawback is that this is somewhat slow. I've not (yet) tested if there is a difference on a self-hosted runner, but I imagine there may be. If the runner was on NixOS then I believe there'd be some improvement due to items remaining in the store (although if there were multiple runners then this shouldn't be true). The best case scenario probably involves the cache server being physically nearby the build server. This is certainly something I think would be good to explore more.
+
+## garnix
+
+Garnix takes a little bit different of an approach.
+It embraces nix flakes entirely and builds in an environment with nix already available.
+It is provided as a GitHub app that listens for events, then pulls the repo and does its checks.
+These checks require no configuration-- just the [flake output schema](https://nixos.wiki/wiki/Flakes#Output_schema) is enough for it to determine what it needs to do.
+It will run the flake checks, build all of the packages, and the devShells.
+In addition to this it makes a binary cache available which, like the other options, can be configured as a substituter.
+
+The process is about as simple as it can get.
+My new projects universally come with a `flake.nix`, so all I have to do is allow Garnix to see the repository and I'm done.
+My checks include linting and formatting so basically all of the pieces I need to manage a codebase get accomplished.
+The CI time is significantly reduced because Garnix is nix-aware (and has very quick access to its own cache).
+I love how quickly this allows me to move when setting up a new repo.
+
+I've never used this, but you can also use GitHub Action's [check_suite](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#check_suite) workflow trigger in combination with Garnix to hook Actions back in-- and use Garnix's cache in them.
+The [Garnix docs have instructions on doing so](https://garnix.io/docs/gh-actions).
+
+# Other comments
+
+I don't think it is a perfect solution, but for many of my use-cases Garnix is perfect.
+I save time setting up projects as well as when running the CI.
+There is one situation for sure that I think it is not ideal for: private code.
+For one, it isn't supported at all by Garnix currently (as far as I understand) but also there is only
+a single shared cache provided by Garnix.
+In the (unlikely?) case that someone guesses your derivation's path they will be able to retrieve it without any auth.
+
+I think Garnix's model is a great thing.
+Even if they don't start offering a paid tier I think it would be well worth an organization implementing something similar.
+A lot of the pieces are out there, but it would certainly take some solid work to accomplish.
+If they do offer a paid plan then that would probably be the way to go.
+
+## further topics
+
+I don't currently have the knowledge to discuss these, but they may be worthwhile as things to look into if this interests you.
+
+- [Hydra](https://github.com/NixOS/hydra)
+- [Hercules-CI](https://hercules-ci.com)
+
