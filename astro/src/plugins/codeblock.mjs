@@ -1,6 +1,6 @@
 import { visit } from "unist-util-visit";
 
-export default function codeBlockData(options = {}) {
+export default function codeBlockData() {
     return (tree) => {
         visit(tree, (node) => {
             if (node.type == "html" && node.value.includes('class="astro-code"')) {

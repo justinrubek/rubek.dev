@@ -18,11 +18,9 @@ import remarkHtmlPlugin from "remark-html"
 
 const mdxOptions = {
     remarkPlugins: [
-        [
-            remarkHintPlugin,
-            remarkHtmlPlugin,
-            codeblockPlugin,
-        ],
+        codeblockPlugin,
+        remarkHintPlugin,
+        remarkHtmlPlugin,
     ],
 };
 
