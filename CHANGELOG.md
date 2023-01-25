@@ -2,6 +2,23 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [0.2.8](https://github.com/justinrubek/rubek.dev/compare/0.2.7..0.2.8) - 2023-01-25
+#### Bug Fixes
+- remove package-lock from bomper - ([2c4861c](https://github.com/justinrubek/rubek.dev/commit/2c4861c5d408307223894bdcdea6444a7533098e)) - [@justinrubek](https://github.com/justinrubek)
+- invalid post tag - ([7008e48](https://github.com/justinrubek/rubek.dev/commit/7008e48d52331e0cd4e5e9b965101563dfe772ee)) - [@justinrubek](https://github.com/justinrubek)
+- multiple remark plugins now load properly - ([6f69b5f](https://github.com/justinrubek/rubek.dev/commit/6f69b5f15e74d1cd35963fd224c116d4fcda1b01)) - [@justinrubek](https://github.com/justinrubek)
+#### Build system
+- **(node)** switch to yarn - ([14cc919](https://github.com/justinrubek/rubek.dev/commit/14cc919d0694ece50311bc56197bb61fe7dc0d0b)) - [@justinrubek](https://github.com/justinrubek)
+#### Features
+- **(posts)** garnix post - ([c82abe4](https://github.com/justinrubek/rubek.dev/commit/c82abe47f74d037d20bbd7cee015e48b72a88200)) - [@justinrubek](https://github.com/justinrubek)
+- add remark-hints plugin - ([e16565e](https://github.com/justinrubek/rubek.dev/commit/e16565e0dccf0017e90546313fd9cccd6037899d)) - [@justinrubek](https://github.com/justinrubek)
+#### Miscellaneous Chores
+- finish thought - ([310b44d](https://github.com/justinrubek/rubek.dev/commit/310b44d1a0350a6f30f586c66501d67f86a90175)) - [@justinrubek](https://github.com/justinrubek)
+- added result timings to post - ([bfafe29](https://github.com/justinrubek/rubek.dev/commit/bfafe29e90b6dabf66340d307a018616a04518ca)) - [@justinrubek](https://github.com/justinrubek)
+- revert posts so they display newest first - ([d090800](https://github.com/justinrubek/rubek.dev/commit/d090800e5170048c040240d12e5ac363598c52f9)) - [@justinrubek](https://github.com/justinrubek)
+
+- - -
+
 ## [0.2.7](https://github.com/justinrubek/rubek.dev/compare/0.2.6..0.2.7) - 2023-01-22
 #### Features
 - **(site)** add plausible script - ([3d103cf](https://github.com/justinrubek/rubek.dev/commit/3d103cfb05ed439fed5dad1388ea7f3b7baab0aa)) - [@justinrubek](https://github.com/justinrubek)
