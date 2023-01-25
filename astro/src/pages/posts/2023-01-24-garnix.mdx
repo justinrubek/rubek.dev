@@ -1,6 +1,6 @@
 ---
 layout: $/layouts/post.astro
-title: "Garnix: simple CI for nix"
+title: "Garnix: simple and fast CI"
 date: 2023-01-24
 category: design
 tags:
@@ -12,6 +12,12 @@ tags:
 - devops
 description: A look at nix-first CI vs other approaches
 ---
+
+?> I'm not writing this assuming readers are seasoned nix users,
+however I am also not going to explain nix concepts in depth.
+It should be possible to follow along but you may have to do further research.
+I have tried to provide links where they are applicable.
+If you need an introduction to nix, the single best source I've found is [Nix from First Principles](https://tonyfinn.com/blog/nix-from-first-principles-flake-edition/)
 
 # Overview
 
@@ -25,7 +31,7 @@ It definitely has a lot going for it:
 However, there are also some issues that I think either make it tricky (or at least very tedious):
 
 - There is some concept of caching build artifacts, but in practice I've not seen this work well
-    - You can use a nix binary cache, but this can be slow. I regular saw a lot of the action's time be used just to download from the cache
+    - You can use a [nix binary cache](https://nixos.wiki/wiki/Binary_Cache), but this can be slow. I regularly saw a lot of action time be used just to download from the cache
 - Limitations on virtualization
     - I had to remove usage of [nixos-generators](https://github.com/nix-community/nixos-generators) for creating an AWS image-- It needed KVM support which was not enabled on the provided runner
 - Self-hosted runners, without proper thought, can slow down your pipeline
@@ -44,15 +50,18 @@ Let's look at a few different approaches.
 
 # Approaches
 
-?> I'm not writing this assuming readers are seasoned nix users,
-however I am also not going to explain nix concepts in depth.
-It should be possible to follow along still but you may have to do further research.
-I have tried to provide links where they are applicable.
+I've ran a set of CI checks on the same codebase using a few different strategies.
+The codebase is based off of my [template](https://github.com/justinrubek/templates) for rust + [crane](https://github.com/ipetkov/crane).
+Crane is really neat in that it separates builds into two steps: first the cargo workspace dependencies are built and only then are the workspace crates built.
+The crate being built is just a hello world application.
+
+You can find the code for this post [here](https://github.com/justinrubek/ci-comparison).
+The PRs on the repo are where I have tested each approach to compare time.
 
 ## naive nix + Actions
 
 This action is simple: it installs nix and runs `nix flake check`.
-You can place any packages you need to ensure build in the flake checks, as well as tests, lints, and anything else you can think of.
+You can place any packages you need to ensure build in the [flake checks](https://github.com/NixOS/nix/blob/f503ba1b8b5912083a6112e3cf082e3525ba258d/src/nix/flake-check.md), as well as tests, lints, and anything else you can think of.
 
 ```yaml filename=.github/workflows/ci.yaml
 name: CI
@@ -78,12 +87,13 @@ jobs:
 
 However, there is a big problem with this one: it will rebuild everything each time it is ran.
 This can result in a huge time increase when building toolchains that won't change between runs.
-It's likely that there is a lot of things in the default [NixOS cache](https://cache.nixos.org/), but almost certainly not everything.
-This is especially true when working on a separate project-- the nix community isn't going to store your artifacts and you likely wouldn't want them to anyway.
+It's likely that a lot of things you'll need will be in the [default NixOS cache](https://cache.nixos.org/), but certainly not everything.
 
 ## nix + Actions + binary cache
 
 Okay, so the easiest next step is to introduce a binary cache.
+With a cache, in the best-case scenario `Cargo.lock` will be unchanged so the workspace dependencies will not be rebuilt.
+This is similar to how local development with cargo will cache results in the `target` directory-- except it works for CI too.
 There are a number of cache solutions out there, but for now we'll focus on [Cachix](https://cachix.org) because:
 
 - At the time of writing, it is free for open source work
@@ -123,35 +133,56 @@ jobs:
 +     - name: Setup nix cache
 +       uses: cachix/cachix-action@v10
 +       with:
-+         name: justinrubek
++         name: justinrubek-ci-comparison
 +         authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
 
       - run: nix flake check
 ```
 
-With this setup any subsequent nix commands can pull in already built derivations.
+With this setup any subsequent nix commands can pull in already built [derivations](https://nixos.org/manual/nix/stable/language/derivations.html).
 As a bonus, the binary cache can be shared with developer machines using [`nix.settings.substituters`](https://search.nixos.org/options?channel=unstable&show=nix.settings.substituters&from=0&size=50&sort=relevance&type=packages&query=nix.settings.sub) and [`nix.settings.trusted-public-keys`](https://search.nixos.org/options?channel=unstable&show=nix.settings.trusted-public-keys&from=0&size=50&sort=relevance&type=packages&query=nix.settings.trust) ([or using `nix.conf`](https://nixos.org/manual/nix/unstable/command-ref/conf-file.html#conf-substituters) if not on NixOS).
 This means that if CI has ran then it is fairly cheap to pull the build results on other machines.
 
-One drawback is that this is somewhat slow. I've not (yet) tested if there is a difference on a self-hosted runner, but I imagine there may be. If the runner was on NixOS then I believe there'd be some improvement due to items remaining in the store (although if there were multiple runners then this shouldn't be true). The best case scenario probably involves the cache server being physically nearby the build server. This is certainly something I think would be good to explore more.
+One drawback is that this is somewhat slow.
+Time is saved compared to having no cache, but pulling items from the cache takes longer than you might expect.
+I've not (yet) tested if there is a difference on a self-hosted runner, but I imagine there may be. If the runner was on NixOS then I believe there'd be some improvement due to items remaining in the store (although if there were multiple runners then this shouldn't be true). The best case scenario probably involves the cache server being physically nearby the build server. This is certainly something I think would be good to explore more.
 
 ## garnix
 
-Garnix takes a little bit different of an approach.
+[Garnix](https://garnix.io) takes a little bit different of an approach.
 It embraces nix flakes entirely and builds in an environment with nix already available.
 It is provided as a GitHub app that listens for events, then pulls the repo and does its checks.
-These checks require no configuration-- just the [flake output schema](https://nixos.wiki/wiki/Flakes#Output_schema) is enough for it to determine what it needs to do.
-It will run the flake checks, build all of the packages, and the devShells.
-In addition to this it makes a binary cache available which, like the other options, can be configured as a substituter.
+Garnix requires no configuration; the [flake output schema](https://nixos.wiki/wiki/Flakes#Output_schema) is enough for it to determine what it needs to do.
+In addition to the checks it provides a binary cache of resuls available which can be configured as a substituter.
+
+!> In the [first approach](#naive-nix--actions) we had to add packages to the flake checks manually, but this is not the case with Garnix.
 
 The process is about as simple as it can get.
-My new projects universally come with a `flake.nix`, so all I have to do is allow Garnix to see the repository and I'm done.
-My checks include linting and formatting so basically all of the pieces I need to manage a codebase get accomplished.
+If your project ships with a `flake.nix` then all you have to do is enable Garnix on the repository and you're done.
+My checks include linting and formatting so basically all of the pieces I need to manage a codebase are accomplished:
+the repository is ready for PRs.
 The CI time is significantly reduced because Garnix is nix-aware (and has very quick access to its own cache).
 I love how quickly this allows me to move when setting up a new repo.
 
+Another major advantage is that Garnix adds each separate build as a check on GitHub's UI.
+The author of the PR can easily see what they need to work on 
+
+![garnix's separate check indicators on the GitHub PR page](/images/uploads/garnix-checks.png)
+
 I've never used this, but you can also use GitHub Action's [check_suite](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#check_suite) workflow trigger in combination with Garnix to hook Actions back in-- and use Garnix's cache in them.
 The [Garnix docs have instructions on doing so](https://garnix.io/docs/gh-actions).
+
+# results
+
+For this workload, Garnix absolutely blows away the other options.
+It's hard for me to say how much of that is due to its architecture and that I ran the other approaches on a free CI platform.
+It'd be good to run a more complex application and compare some other approaches to see how these change.
+
+| approach | time (rebuilding all) | time (using cache) |
+| -------- | --------------------------------- | ------------------ |
+| [naive nix](#naive-nix--actions) | 93s | N/A |
+| [cachix](#nix--actions--binary-cache) | 144s | 71s |
+| [garnix](#garnix) | 78s | 9s |
 
 # Other comments
 
