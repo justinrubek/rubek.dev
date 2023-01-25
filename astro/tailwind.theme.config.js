@@ -10,6 +10,9 @@ const themes = {
                 primary: colors.purple[400],
                 secondary: colors.purple[900],
             },
+            light: {
+                neutral: colors.white[200],
+            },
             accent: {
                 gray: {
                     light: colors.blue[300],

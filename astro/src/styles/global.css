@@ -15,6 +15,7 @@
 
 :root {
     --theme-text: var(--color-gray-800);
+    --theme-text-bold: var(--color-purple-900);
 }
 
 p {
@@ -23,6 +24,10 @@ p {
 
 a {
     color: var(text-theme-text);
+}
+
+strong {
+    color: var(theme-text-bold);
 }
 
 p.hint.error,
