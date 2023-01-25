@@ -26,10 +26,22 @@ module.exports = {
                 dark: {
                     css: {
                         color: theme("colors.gray.200"),
+                        '--tw-prose-bold': colors.dark.primary,
+                        '--tw-prose-code': colors.dark.primary,
+                        '--tw-prose-heading': colors.dark.primary,
+                        'thead th': {
+                            color: colors.dark.secondary,
+                        },
                     },
                 },
                 DEFAULT: {
                     css: {
+                        '--tw-prose-bold': colors.light.neutral,
+                        '--tw-prose-code': colors.light.neutral,
+                        '--tw-prose-heading': colors.light.neutral,
+                        'thead th': {
+                            color: colors.secondary,
+                        },
                         a: {
                             color: colors.dark.primary,
                               '&:hover': {
