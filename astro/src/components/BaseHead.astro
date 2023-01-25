@@ -35,31 +35,3 @@
     <meta name="msapplication-TileColor" content="#da532c" />
     <meta name="msapplication-config" content="/browserconfig.xml"/>
     <meta name="theme-color" content="#ffffff" />
-
-    <!-- Open Graph Tags (Facebook) -->
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content={title} />
-    {permalink &&
-        <meta property="og:url" content={permalink} />
-    }
-    {description &&
-        <meta property="og:description" content={description} />
-    }
-    {image &&
-        <meta property="og:image" content={image} />
-    }
-
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:title" content={title} />
-    {permalink &&
-        <meta property="twitter:url" content={permalink} />
-    }
-    {description &&
-        <meta property="twitter:description" content={description} />
-    }
-    {image &&
-        <meta property="twitter:image" content={image} />
-    }
-
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
