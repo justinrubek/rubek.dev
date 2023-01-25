@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [0.3.0](https://github.com/justinrubek/rubek.dev/compare/0.2.8..0.3.0) - 2023-01-25
+#### Bug Fixes
+- **(css)** made some elements easier to read - ([b6abaf9](https://github.com/justinrubek/rubek.dev/commit/b6abaf9166cd29c54004bb85a6280f365baf02b4)) - [@justinrubek](https://github.com/justinrubek)
+
+- - -
+
 ## [0.2.8](https://github.com/justinrubek/rubek.dev/compare/0.2.7..0.2.8) - 2023-01-25
 #### Bug Fixes
 - remove package-lock from bomper - ([2c4861c](https://github.com/justinrubek/rubek.dev/commit/2c4861c5d408307223894bdcdea6444a7533098e)) - [@justinrubek](https://github.com/justinrubek)
