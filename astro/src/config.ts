@@ -29,6 +29,7 @@ export const SITE = {
     description: '',
     url: 'https://rubek.dev',
     githubUrl: 'https://github.com/justinrubek',
+    repoUrl: 'https://github.com/justinrubek/rubek.dev',
     listDrafts: true
 }
 
