@@ -1,0 +1,8 @@
+(
+    cargo: Some(Autodetect),
+    by_file: Some({
+        "astro/package.json": (
+            search_value: Some("rubek.dev"),
+        ),
+    })
+)
