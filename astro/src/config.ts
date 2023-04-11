@@ -17,6 +17,10 @@ export const NAV_ITEMS: NavItems = {
         path: '/posts',
         title: 'posts'
     },
+    docs: {
+        path: '/docs',
+        title: 'docs'
+    },
     tags: {
         path: '/tags',
         title: 'tags'

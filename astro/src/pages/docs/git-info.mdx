@@ -1,0 +1,20 @@
+---
+layout: $/layouts/post.astro
+title: git tips
+date: 2023-04-10
+category: info
+tags:
+- git
+- tips
+---
+
+## intent-to-add
+
+There may be situations where you need to ensure a file is kept inside a git worktree but do not wish to commit the file when collaborating.
+
+One example this comes up in is when using nix flakes in projects that don't have one and won't accept them as contributions.
+In this case, where you'll git to act as if the files were present you can use `git add --intent-to-add` to make it behave as if they were added, but not be included in commits.
+
+!> **specifically, the help page for `--intent-to-add` says:** Record only the fact that the path will be added later. An entry for the path is placed in the index with no content. This is
+           useful for, among other things, showing the unstaged content of such files with git diff and committing them with git commit
+           -a.

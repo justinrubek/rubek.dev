@@ -1,0 +1,28 @@
+---
+import DefaultPageLayout from '$/layouts/default.astro'
+import PreviewList from '$/components/PreviewList.astro'
+import PagePreview from '$/components/PagePreview.astro'
+import Paginator from '$/components/Paginator.astro'
+import { PAGE_SIZE } from '$/config'
+
+let title = 'resources'
+let description = ''
+
+export async function getStaticPaths({ paginate }) {
+  const all_items = await Astro.glob('./*.md*');
+  console.log(all_items)
+  // const sorted_items = all_items.sort((a, b) => new Date(b.date) - new Date(a.date)).reverse();
+
+
+    return paginate(all_items, {
+      pageSize: PAGE_SIZE
+    })
+}
+
+const { page } = Astro.props
+console.log(page)
+---
+<DefaultPageLayout content={{ title, description }}>
+    <PreviewList items={page.data} />
+    <Paginator page={page} />
+</DefaultPageLayout>
