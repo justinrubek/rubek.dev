@@ -2,6 +2,20 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [0.4.0](https://github.com/justinrubek/rubek.dev/compare/0.3.0..0.4.0) - 2023-04-11
+#### Build system
+- **(cargo)** remove openssl dependency - ([4c9b4ef](https://github.com/justinrubek/rubek.dev/commit/4c9b4efffd4593d07ceede5dbbfe7d1f519fa8c3)) - [@justinrubek](https://github.com/justinrubek)
+#### Continuous Integration
+- update bomper dependency - ([4731b7a](https://github.com/justinrubek/rubek.dev/commit/4731b7a7c50ed6550f3d74732109ff306d69b83f)) - [@justinrubek](https://github.com/justinrubek)
+#### Features
+- add "docs" section - ([d5a6de1](https://github.com/justinrubek/rubek.dev/commit/d5a6de164a62708093eba6c2655659ffc40c8222)) - [@justinrubek](https://github.com/justinrubek)
+#### Miscellaneous Chores
+- add description to docs page - ([fc3ce62](https://github.com/justinrubek/rubek.dev/commit/fc3ce62b2b289ff9a5f84a028e8122a9eb7331cf)) - [@justinrubek](https://github.com/justinrubek)
+- add commented site repo url - ([ac12586](https://github.com/justinrubek/rubek.dev/commit/ac1258673a0da20c377ebf89904bd5176ed18e19)) - [@justinrubek](https://github.com/justinrubek)
+- remove netlify, twitter, and others - ([52326df](https://github.com/justinrubek/rubek.dev/commit/52326df6e85c8e42c6a658b460e878b5954196f4)) - [@justinrubek](https://github.com/justinrubek)
+
+- - -
+
 ## [0.3.0](https://github.com/justinrubek/rubek.dev/compare/0.2.8..0.3.0) - 2023-01-25
 #### Bug Fixes
 - **(css)** made some elements easier to read - ([b6abaf9](https://github.com/justinrubek/rubek.dev/commit/b6abaf9166cd29c54004bb85a6280f365baf02b4)) - [@justinrubek](https://github.com/justinrubek)
