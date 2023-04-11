@@ -1,0 +1,47 @@
+---
+import { SITE } from '$/config'
+import MainLayout from '$/components/MainLayout.astro'
+import BaseHead from '$/components/BaseHead.astro'
+import Prose from '$/components/Prose.astro'
+import '../styles/code.css'
+
+const { content } = Astro.props
+---
+<!doctype html>
+<html lang="en">
+    <head>
+        <BaseHead title={ content.title ? `${ SITE.title } | ${content.title}` : SITE.title } description={ content.description }/>
+    </head>
+    <MainLayout>
+        <div class="page__header">
+            <div class="page__tags">
+                { content.tags.length > 0 && content.tags.map(tag => <a class="page__tag" href={`/tags/${tag}`} title={tag}>{tag}</a>) }
+            </div>
+            <h1 class="page__title">{ content.title }</h1>
+        </div>
+        <!--<img src={content.image} alt={content.title} />-->
+        <Prose>
+            <slot />
+        </Prose>
+    </MainLayout>
+</html>
+<style>
+    .page__header {
+        @apply py-4 mb-1
+    }
+    .page__title {
+        @apply text-5xl font-extrabold text-theme-primary dark:text-theme-dark-primary
+    }
+    .page__author {
+        @apply no-underline dark:text-white hover:text-theme-primary
+    }
+    .page__date {
+        @apply text-gray-400
+    }
+    .page__tags {
+        @apply inline-flex gap-2
+    }
+    .page__tag {
+        @apply text-gray-400 hover:text-theme-primary dark:hover:text-theme-dark-primary
+    }
+</style>
