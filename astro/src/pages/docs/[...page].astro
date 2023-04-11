@@ -3,6 +3,7 @@ import DefaultPageLayout from '$/layouts/default.astro'
 import PreviewList from '$/components/PreviewList.astro'
 import PagePreview from '$/components/PagePreview.astro'
 import Paginator from '$/components/Paginator.astro'
+import Prose from '$/components/Prose.astro'
 import { PAGE_SIZE } from '$/config'
 
 let title = 'resources'
@@ -23,6 +24,12 @@ const { page } = Astro.props
 console.log(page)
 ---
 <DefaultPageLayout content={{ title, description }}>
+    <Prose>
+    This contains miscellaneous information I've found useful but don't have a place for
+    </Prose>
+
+    <br />
+
     <PreviewList items={page.data} />
     <Paginator page={page} />
 </DefaultPageLayout>
