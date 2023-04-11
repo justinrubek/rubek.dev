@@ -36,7 +36,7 @@
         ];
       };
 
-      pname = "rust-crane";
+      pname = "rubek-site";
 
       buildInputs = allBuildInputs [];
       nativeBuildInputs = allNativeBuildInputs [];
@@ -104,8 +104,6 @@
       pkgs.pkg-config
     ];
     extraNativeBuildInputs = [
-      pkgs.openssl
-      pkgs.openssl.dev
     ];
 
     allBuildInputs = base: base ++ extraBuildInputs;
