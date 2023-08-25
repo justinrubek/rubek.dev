@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [0.4.1](https://github.com/justinrubek/rubek.dev/compare/0.4.0..0.4.1) - 2023-08-25
+#### Build system
+- **(cargo)** cargo update - ([399c9bc](https://github.com/justinrubek/rubek.dev/commit/399c9bc7b5262911431d87e0f796883018c654fd)) - [@justinrubek](https://github.com/justinrubek)
+- **(cargo)** cargo update - ([4abca7e](https://github.com/justinrubek/rubek.dev/commit/4abca7e74efdf7fe88998535dccaa21229c4d1b7)) - [@justinrubek](https://github.com/justinrubek)
+- **(nix)** update fenix input - ([6634096](https://github.com/justinrubek/rubek.dev/commit/663409668864e876ec771c8d8d1c8fd019832e3f)) - [@justinrubek](https://github.com/justinrubek)
+
+- - -
+
 ## [0.4.0](https://github.com/justinrubek/rubek.dev/compare/0.3.0..0.4.0) - 2023-04-11
 #### Build system
 - **(cargo)** remove openssl dependency - ([4c9b4ef](https://github.com/justinrubek/rubek.dev/commit/4c9b4efffd4593d07ceede5dbbfe7d1f519fa8c3)) - [@justinrubek](https://github.com/justinrubek)
