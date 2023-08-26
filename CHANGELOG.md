@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [0.4.2](https://github.com/justinrubek/rubek.dev/compare/0.4.1..0.4.2) - 2023-08-26
+#### Build system
+- **(cargo)** update scheduling-api - ([d4fa432](https://github.com/justinrubek/rubek.dev/commit/d4fa432990275e28814243fc7de6d4ffbbe2d94a)) - [@justinrubek](https://github.com/justinrubek)
+
+- - -
+
 ## [0.4.1](https://github.com/justinrubek/rubek.dev/compare/0.4.0..0.4.1) - 2023-08-25
 #### Build system
 - **(cargo)** cargo update - ([399c9bc](https://github.com/justinrubek/rubek.dev/commit/399c9bc7b5262911431d87e0f796883018c654fd)) - [@justinrubek](https://github.com/justinrubek)
