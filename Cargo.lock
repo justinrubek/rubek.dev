@@ -244,9 +244,9 @@ checksum = "89b2fd2a0dcf38d7971e2194b6b6eebab45ae01067456a7fd93d5547a61b70be"
 
 [[package]]
 name = "caldav-utils"
-version = "0.7.0"
+version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "75d43266226c1c091f6281b04cd0045a8ea715f39239f2310ff438050b36e3d4"
+checksum = "4be62c2e54321655e5d5b1cdd65e46364f810baba2a5a35fa3c10ce1a5de4f25"
 dependencies = [
  "anyhow",
  "chrono",
@@ -1322,9 +1322,9 @@ checksum = "1ad4cc8da4ef723ed60bced201181d83791ad433213d8c24efffda1eec85d741"
 
 [[package]]
 name = "scheduling-api"
-version = "0.7.0"
+version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e4d6be02e36c864713038669888a0c1999a3a9e4345f588f9510825a79865cb0"
+checksum = "4db16e4861155d9ac45a52c8ad6b07e7f28ac136604a265eb822a9df07e8f8da"
 dependencies = [
  "axum",
  "caldav-utils",
