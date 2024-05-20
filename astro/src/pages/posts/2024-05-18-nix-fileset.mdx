@@ -1,0 +1,43 @@
+---
+layout: $/layouts/post.astro
+title: "`nixpkgs.lib.fileset`"
+date: 2024-05-18
+category: design
+tags:
+- nix
+- nixpkgs
+- nix-filter
+description: a nixpkgs lib that could replace nix-filter
+---
+
+In my rust projects I use [nix-filter](https://github.com/numtide/nix-filter) to filter files that are used in nix builds.
+This ensures that the build cache isn't invalidated when I change files that are unrelated to it e.g. when editing a `README.md`,
+the project does not require a re-compile.
+
+The syntax looks like this:
+
+```nix
+src = inputs.nix-filter.lib {
+  root = ../.;
+  include = [
+    "Cargo.lock"
+    "Cargo.toml"
+    "src"
+  ];
+};
+```
+
+Recently, nixpkgs added [lib.fileset](https://github.com/NixOS/nixpkgs/tree/master/lib/fileset)[^1] which, upon first look, appears to be very similar:
+
+```nix
+lib.fileset.toSource {
+  root = ./.;
+  fileset = lib.fileset.unions [
+    ./Cargo.lock
+    ./Cargo.toml
+    ./src
+  ];
+};
+```
+
+[^1]: [permalink](https://github.com/NixOS/nixpkgs/tree/8ee3dcb13c44ec3d72c338a504b08669a0e832f4/lib/fileset)
