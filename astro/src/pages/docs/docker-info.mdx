@@ -1,0 +1,14 @@
+---
+layout: $/layouts/page.astro
+title: docker tips
+category: info
+tags:
+- docker
+- tips
+---
+
+## cleaning up docker-daemon
+
+remove all stopped containers: `docker container prune`
+
+remove dangling images: `docker rmi $(docker images --filter "dangling=true" -q --no-trunc)`

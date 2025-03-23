@@ -1,0 +1,17 @@
+---
+layout: $/layouts/page.astro
+title: game troubleshooting
+category: info
+tags:
+- git
+- tips
+---
+
+## games do not properly detect resolution of monitor
+
+I've experienced this for sure using hyprland, but do not know if it affects other managers.
+Games seemingly detect the wrong resolution.
+It seems that commonly that they choose a different monitor when determining their window size, or fallback to some value.
+
+You can use gamescope to set the size of a monitor to make the game behave.
+Add to the launch options: `gamescope -W 2560 -H 1440 -- %command%
